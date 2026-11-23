@@ -59,3 +59,18 @@ async function growGarden(target: number, today: string) {
   await putMany("aura_ledger", rows, { keepTimestamps: true });
   await afterAward(0);
 }
+
+/** Fires a celebration by kind, for previews and screenshots. */
+export async function previewMoment(kind: string) {
+  const { celebrate } = await import("./game/celebrate-bus");
+  if (kind === "realm") celebrate({ kind: "realm", realm: 2, name: "The Wildflower Meadow", boostFrom: 1, boostTo: 2, line: "Laura. LAURA. There's a whole meadow out here." });
+  if (kind === "level") celebrate({ kind: "levelup", from: 9, to: 10, title: "Budding", line: "Level up! I knew you had it in you." });
+}
+
+/** Grants aura directly (tests only), then runs the usual unlock checks. */
+export async function grant(amount: number) {
+  const { awardAura, readGameContext } = await import("./game/aura");
+  const before = (await readGameContext()).total;
+  await awardAura({ id: `bonus:grant:${Date.now()}`, base: amount, reason: "Test grant", source: "bonus", multiply: false });
+  await afterAward(before);
+}

@@ -13,6 +13,14 @@ export function DevHooks() {
         const { seedDemo } = await import("@/lib/demo");
         await seedDemo(kind);
       },
+      grant: async (n: number) => {
+        const { grant } = await import("@/lib/demo");
+        await grant(n);
+      },
+      moment: async (kind: string) => {
+        const { previewMoment } = await import("@/lib/demo");
+        await previewMoment(kind);
+      },
     };
   }, []);
   return null;

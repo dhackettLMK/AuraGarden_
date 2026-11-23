@@ -9,8 +9,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | 1 | Foundations | ✅ Done |
 | 2 | Core editing | ✅ Done |
 | 3 | Aura and Oscar | ✅ Done |
-| 4 | The garden world | ⏳ Next |
-| 5 | Achievements | ⬜ |
+| 4 | The garden world | ✅ Done |
+| 5 | Achievements | ⏳ Next |
 | 6 | Thoughts, People, Calendar | ⬜ |
 | 7 | Home and the unwrap | ⬜ |
 | 8 | Sync and PWA | ⬜ |
@@ -54,9 +54,17 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Instant feedback** (ding, 15 ms haptic, leaf burst) fires synchronously in the tap handler; the flying number and Oscar follow when the award lands (~tens of ms). Moment cards (unlock, level, achievement, rank) wait until completions have been quiet for 1.6 s, so a run of ticks is never interrupted.
 - **Accessible aura text:** the lavender→gold gradient is deepened for text on light backgrounds (`--aura-ink-*`) to pass AA; the bright gradient stays on fills.
 
+- **Garden art** follows `docs/ART_STYLE.md`. Realm 1 items live in `components/garden/art/home.tsx`, project corners in `art/corners.tsx`, realms 2–3 in `art/realms.tsx`. Slots for both stages are in `components/garden/slots.ts` (wide 1600×1000, tall 800×1000).
+- **Weather:** every 45 s there's a 30% chance of a 22 s drizzle followed by a 30 s rainbow (only once the rainbow is unlocked). `?time=` and `?season=` on /garden preview any sky or season.
+- **Decor mode** lets her hide any unlock and move eight decor items (daisy, tulips, bench, sunflowers, fountain, well, cherry, gazebo) through five spare spots per layout.
+- **Realm entries** (`realm-meadow` etc.) are ledger unlocks that trigger the full-screen sequence instead of a card; the 50,000 "gate" item is the last Realm 1 unlock.
+- **Oscar in the garden** wanders between waypoints every 7 s, naps (sleepy pose), swims in the pool once it exists, sleeps at night; tapping pets him (hearts, `petCount` in settings).
+
 ## Placeholders
 
 - **Swap 'N' Serve Cup logo.** David pasted a cleaner (non-distressed) version of the Cup logo in chat on 23 Nov. Pasted images can't be saved from chat, so the app uses the existing `assets/logos/swapnserve-cup-logo.png`. To swap it in, upload the new PNG over that path (same name). The build copies it to `public/brand/` and every screen picks it up.
+
+- **Realms 4–10** launch as teaser cards (per brief); see `REALMS_TODO.md`.
 
 ## Open questions for David
 

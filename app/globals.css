@@ -481,3 +481,308 @@ html.reduce-motion *::after {
     transform: scale(1.08);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Garden ambience (brief 9.1). Slow and small; frozen by reduced motion. */
+/* ------------------------------------------------------------------ */
+svg .sway,
+svg .sway-nod,
+svg .sway-tree {
+  transform-box: view-box;
+}
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+@keyframes nod {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+@keyframes sway-tree {
+  0%,
+  100% {
+    transform: rotate(-0.8deg);
+  }
+  50% {
+    transform: rotate(0.9deg);
+  }
+}
+.sway {
+  animation: sway 4.6s ease-in-out infinite;
+}
+.sway-nod {
+  animation: nod 5.4s ease-in-out infinite;
+}
+.sway-tree {
+  animation: sway-tree 7s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateX(-6px);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(6px);
+  }
+}
+.shimmer {
+  animation: shimmer 3.8s ease-in-out infinite;
+}
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-12%);
+  }
+  to {
+    transform: translateX(12%);
+  }
+}
+.cloud {
+  animation: cloud-drift 80s ease-in-out infinite alternate;
+}
+.cloud-1 {
+  animation-duration: 64s;
+  animation-direction: alternate-reverse;
+}
+.cloud-2 {
+  animation-duration: 96s;
+}
+@keyframes flap {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.35);
+  }
+}
+.flap,
+.flap-r {
+  animation: flap 0.36s ease-in-out infinite;
+  transform-box: fill-box;
+}
+.flap {
+  transform-origin: right center;
+}
+.flap-r {
+  transform-origin: left center;
+}
+@keyframes drift-a {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(60px, -30px);
+  }
+  50% {
+    transform: translate(120px, 0);
+  }
+  75% {
+    transform: translate(60px, 24px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+.drift-a {
+  animation: drift-a 14s ease-in-out infinite;
+}
+.drift-b {
+  animation: drift-a 11s ease-in-out infinite reverse;
+  translate: 90px 40px;
+}
+.drift-c {
+  animation: drift-a 17s ease-in-out infinite;
+  animation-delay: -6s;
+  translate: -60px 20px;
+}
+@keyframes balloon {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-60px, -18px);
+  }
+}
+.balloon {
+  animation: balloon 40s ease-in-out infinite;
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+.bob {
+  animation: bob 2.6s ease-in-out infinite;
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.twinkle {
+  animation: twinkle 2.8s ease-in-out infinite;
+}
+@keyframes steam {
+  from {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+.steam {
+  animation: steam 2.4s ease-out infinite;
+}
+@keyframes spray {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+.fountain-spray {
+  animation: spray 1.4s ease-in-out infinite;
+}
+@keyframes fall {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-120px, 1060px) rotate(540deg);
+    opacity: 0.6;
+  }
+}
+.fall {
+  animation: fall 10s linear infinite;
+  transform-box: fill-box;
+}
+@keyframes drop {
+  from {
+    transform: translate(0, -60px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(-20px, 80px);
+    opacity: 0;
+  }
+}
+.drizzle .drop {
+  animation: drop 0.9s linear infinite;
+}
+@keyframes firefly {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(14px, -18px);
+  }
+}
+.firefly {
+  animation: firefly 5s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px #f7f3a0);
+}
+@keyframes robin {
+  0%,
+  80%,
+  100% {
+    transform: rotate(0);
+  }
+  85% {
+    transform: rotate(-14deg);
+  }
+  90% {
+    transform: rotate(4deg);
+  }
+}
+.robin {
+  animation: robin 5s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.garden-still *,
+html.reduce-motion svg * {
+  animation-play-state: paused !important;
+}
+.garden-dim {
+  opacity: 0.35;
+  transition: opacity 400ms;
+}
+.garden-spot {
+  filter: drop-shadow(0 0 18px rgba(255, 211, 110, 0.95)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+  animation: spot-pulse 1.6s ease-in-out 3;
+  transform-box: fill-box;
+}
+@keyframes spot-pulse {
+  50% {
+    filter: drop-shadow(0 0 28px rgba(255, 211, 110, 1)) drop-shadow(0 0 10px rgba(255, 255, 255, 1));
+  }
+}
+.garden-decor {
+  outline: 2px dashed rgba(255, 255, 255, 0.8);
+  outline-offset: 6px;
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.windmill-sails {
+  animation: spin-slow 14s linear infinite;
+}
+@keyframes mist {
+  0%,
+  100% {
+    transform: translateX(-4%);
+  }
+  50% {
+    transform: translateX(4%);
+  }
+}
+.mist {
+  background:
+    radial-gradient(60% 50% at 20% 40%, rgba(255, 255, 255, 0.75), transparent 70%),
+    radial-gradient(50% 40% at 75% 60%, rgba(255, 255, 255, 0.65), transparent 70%),
+    radial-gradient(40% 40% at 50% 20%, rgba(255, 255, 255, 0.5), transparent 70%);
+  animation: mist 12s ease-in-out infinite;
+}
+.dark .mist {
+  background:
+    radial-gradient(60% 50% at 20% 40%, rgba(180, 200, 190, 0.35), transparent 70%),
+    radial-gradient(50% 40% at 75% 60%, rgba(180, 200, 190, 0.3), transparent 70%);
+}
