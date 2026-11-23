@@ -10,3 +10,8 @@ playwright-report/
 test-results/
 *.log
 .DS_Store
+*.tsbuildinfo
+next-env.d.ts
+*.pem
+/screenshots/
+/public/brand/
