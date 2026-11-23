@@ -11,6 +11,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Inline the (small) stylesheet so first paint isn't blocked on a CSS request.
+  experimental: { inlineCss: true },
   turbopack: {
     rules: {
       "*.css": {

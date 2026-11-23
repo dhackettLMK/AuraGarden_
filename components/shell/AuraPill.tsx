@@ -19,14 +19,16 @@ export function AuraPill() {
       id="aura-pill"
       onClick={() => open(true)}
       className="group relative inline-flex h-10 items-center gap-1.5 rounded-full bg-surface pl-1.5 pr-3 shadow-[var(--shadow-soft)] ring-1 ring-line transition-transform active:scale-95"
-      aria-label={`Aura ${formatAura(game.total, "full")}, level ${game.level}. Open aura details`}
     >
       <span className="aura-pill-glow pointer-events-none absolute inset-0 rounded-full opacity-0" aria-hidden="true" />
       <AuraOrb size={28} />
+      <span className="sr-only">Aura </span>
       <span className="tabular text-[15px] font-bold tracking-tight">
         <Odometer value={game.total} format={(n) => formatAura(n, style)} />
       </span>
+      <span className="sr-only">, </span>
       <span className="ml-0.5 rounded-full aura-bg px-1.5 py-[1px] text-[11px] font-bold text-[#3a2340]">Lv {game.level}</span>
+      <span className="sr-only">. Open aura details ({formatAura(game.total, "full")} in full)</span>
     </button>
   );
 }

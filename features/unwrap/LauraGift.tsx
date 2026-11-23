@@ -31,9 +31,9 @@ function GiftInner({ slug }: { slug: string }) {
   const status = useGardenStatus();
   const settings = useSettings();
   if (params.get("skip") === "1") return <main className="min-h-dvh bg-background" aria-label="Loading" />;
-  if (status === "loading" || (status === "ready" && !settings)) return <main className="min-h-dvh bg-[linear-gradient(180deg,#FFF7EC,#F8DCD6)]" />;
   // A device that already has her garden gets the short version (unless she asked to replay).
-  if (status === "ready" && params.get("replay") !== "1") return <ReturnVisit gift={gift} name={settings?.displayName || gift.recipient} timezone={settings?.timezone} />;
+  if (status === "ready" && settings && params.get("replay") !== "1") return <ReturnVisit gift={gift} name={settings.displayName || gift.recipient} timezone={settings.timezone} />;
+  // The arrival paints straight away (even before we know whether there's a garden).
   return <FullUnwrap gift={gift} hasGarden={status === "ready"} />;
 }
 
@@ -112,19 +112,17 @@ function FullUnwrap({ gift, hasGarden }: { gift: GiftConfig; hasGarden: boolean 
       <AnimatePresence>
         {showTitle && (
           <motion.div className="relative z-10 mb-6 text-center" exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.4 }}>
-            <motion.h1 initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="font-display text-[clamp(34px,9vw,52px)] font-semibold leading-tight">
-              Hey {gift.recipient},
-            </motion.h1>
-            <motion.p initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.6 }} className="mt-1 font-display text-[clamp(20px,5vw,26px)] text-[#6F665D]">
+            <h1 className="fade-up font-display text-[clamp(34px,9vw,52px)] font-semibold leading-tight">Hey {gift.recipient},</h1>
+            <p className="fade-up mt-1 font-display text-[clamp(20px,5vw,26px)] text-[#6F665D]" style={{ animationDelay: "600ms" }}>
               someone made you something.
-            </motion.p>
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
 
       <motion.div
         className="relative z-10 w-full"
-        initial={reduce ? false : { y: 80, scale: 0.6, opacity: 0 }}
+        initial={reduce ? false : { y: 80, scale: 0.6 }}
         animate={stage === "reveal" || stage === "choose" ? { y: 0, scale: 0.8, opacity: 1 } : { y: 0, scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 16, delay: stage === "arrival" ? 0.9 : 0 }}
       >

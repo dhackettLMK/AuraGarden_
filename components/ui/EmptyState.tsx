@@ -25,7 +25,7 @@ export function EmptyState({
         <div className="absolute inset-x-2 bottom-0 h-3 rounded-[50%] bg-ink/8 blur-[2px]" aria-hidden="true" />
         <Oscar size={size} pose={pose} />
       </div>
-      <h3 className="mt-4 font-display text-xl font-semibold">{title}</h3>
+      <h2 className="mt-4 font-display text-xl font-semibold">{title}</h2>
       {line && <p className="mt-1.5 max-w-xs text-[15px] text-ink-muted">{line}</p>}
       {children && <div className="mt-5 flex flex-wrap justify-center gap-2">{children}</div>}
     </div>

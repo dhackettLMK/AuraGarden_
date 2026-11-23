@@ -94,7 +94,7 @@ export function TrophyRoom() {
                         const got = aura >= r.at;
                         const name = p.rankNames?.[i] || r.name;
                         return (
-                          <li key={i} className={cn("flex w-24 shrink-0 flex-col items-center gap-1 rounded-2xl p-2 text-center", got ? "bg-primary-soft/60" : "bg-surface-sunk opacity-70")}>
+                          <li key={i} className={cn("flex w-24 shrink-0 flex-col items-center gap-1 rounded-2xl p-2 text-center", got ? "bg-primary-soft/60" : "bg-surface-sunk")}>
                             {p.kind === "martial" ? (
                               <BeltIcon size={40} color={got ? r.color : "#D6CFC3"} stripes={got ? r.stripes : 0} />
                             ) : (

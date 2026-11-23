@@ -104,14 +104,14 @@ export function TasksView() {
             { value: "board", label: <><SquareKanban size={16} /> Board</> },
           ]}
         />
-        <Link href="/calendar" className="inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-ink-muted hover:bg-surface-sunk hover:text-ink">
+        <Link href="/calendar" aria-label="Calendar view" className="inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-semibold text-ink-muted hover:bg-surface-sunk hover:text-ink">
           <CalendarDays size={16} /> <span className="hidden sm:inline">Calendar</span>
         </Link>
         <div className="flex-1" />
-        <Button variant={activeFilters ? "soft" : "ghost"} size="sm" onClick={() => setFiltersOpen((v) => !v)} aria-expanded={filtersOpen}>
+        <Button variant={activeFilters ? "soft" : "ghost"} size="sm" onClick={() => setFiltersOpen((v) => !v)} aria-expanded={filtersOpen} aria-label={`Filter${activeFilters ? `, ${activeFilters} active` : ""}`}>
           <SlidersHorizontal size={16} /> <span className="hidden sm:inline">Filter</span>{activeFilters ? ` ${activeFilters}` : ""}
         </Button>
-        <Button variant={selectMode ? "soft" : "ghost"} size="sm" onClick={() => (selectMode ? clearSel() : setSelectMode(true))}>
+        <Button variant={selectMode ? "soft" : "ghost"} size="sm" onClick={() => (selectMode ? clearSel() : setSelectMode(true))} aria-label={selectMode ? "Cancel selecting" : "Select tasks"}>
           <CheckSquare size={16} /> <span className={selectMode ? "" : "hidden sm:inline"}>{selectMode ? "Cancel" : "Select"}</span>
         </Button>
       </div>
@@ -192,10 +192,10 @@ export function TasksView() {
             if (!list.length) return null;
             return (
               <section key={k} aria-label={GROUP_LABELS[k]} className={cn(k === "overdue" && "rounded-[24px] bg-gentle/35 p-3 md:p-4")}>
-                <h3 className={cn("mb-2 flex items-center gap-2 font-display text-[18px] font-semibold", k === "overdue" && "text-gentle-ink")}>
+                <h2 className={cn("mb-2 flex items-center gap-2 font-display text-[18px] font-semibold", k === "overdue" && "text-gentle-ink")}>
                   {GROUP_LABELS[k]}
                   <span className="text-sm font-medium tabular text-ink-faint">{list.length}</span>
-                </h3>
+                </h2>
                 <SortableTaskList tasks={list} projects={projects} sortable={false} selectMode={selectMode} selected={selected} onSelect={toggleSel} />
               </section>
             );

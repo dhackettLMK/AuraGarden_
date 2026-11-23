@@ -60,7 +60,7 @@ function TabLink({
       aria-current={active ? "page" : undefined}
       className={cn(
         "relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl text-[12px] font-semibold transition-colors",
-        active ? "text-primary" : "text-ink-muted",
+        active ? "text-primary-strong dark:text-primary" : "text-ink-muted",
       )}
     >
       {active && (

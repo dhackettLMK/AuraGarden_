@@ -1,10 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
-import { seed, waitForCard } from "./helpers";
+import { pillTotal, seed, waitForCard } from "./helpers";
 
-async function pillTotal(page: Page) {
-  const label = await page.locator("#aura-pill").getAttribute("aria-label");
-  return Number(label!.match(/Aura ([\d,]+)/)![1].replace(/,/g, ""));
-}
 
 /** Task awards in the ledger for a task title. */
 async function taskAwards(page: Page, title: string) {

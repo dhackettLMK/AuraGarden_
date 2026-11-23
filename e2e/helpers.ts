@@ -43,3 +43,9 @@ export async function waitForCard(page: Page, heading?: string) {
     await page.waitForTimeout(800);
   }
 }
+
+/** The aura total, in full, from the header pill. */
+export async function pillTotal(page: Page) {
+  const text = (await page.locator("#aura-pill").textContent()) ?? "";
+  return Number(text.match(/\(([\d,]+) in full\)/)![1].replace(/,/g, ""));
+}

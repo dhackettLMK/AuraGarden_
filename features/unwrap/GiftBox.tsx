@@ -126,7 +126,7 @@ export function GiftTag({ line, signature, written = false }: { line: string; si
       <div className="relative rounded-[14px] bg-[#FFFBF2] px-5 pb-4 pt-5 text-center shadow-[0_10px_24px_rgba(79,122,90,0.22)] ring-1 ring-[#EDE2CC]" style={{ clipPath: "polygon(12% 0, 88% 0, 100% 14%, 100% 100%, 0 100%, 0 14%)" }}>
         <span className="absolute left-1/2 top-2 h-2.5 w-2.5 -translate-x-1/2 rounded-full ring-2 ring-[#D8CBB2]" aria-hidden="true" />
         <p className="font-hand text-[25px] leading-[1.1] text-[#4A3F35]">{line}</p>
-        <div className="mt-1 flex items-center justify-center gap-1.5" aria-label={`From ${signature}, with love`}>
+        <div className="mt-1 flex items-center justify-center gap-1.5" role="img" aria-label={`From ${signature}, with love`}>
           <motion.span
             className="-mx-3 px-3 font-signature text-[40px] leading-[1.15] text-[#3F5D47]"
             initial={{ clipPath: instant ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)" }}

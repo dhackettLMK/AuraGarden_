@@ -164,9 +164,9 @@ export function TaskRow({ task, project, showProject = true, dragHandle, selecte
                 <button
                   type="button"
                   onClick={() => openTask(task)}
-                  className="mt-0.5 flex max-w-full flex-wrap items-center gap-x-2.5 gap-y-0.5 text-left text-[13px] font-medium text-ink-muted"
-                  aria-label={`Open details for ${task.title}`}
+                  className="mt-0.5 flex min-h-6 max-w-full flex-wrap items-center gap-x-2.5 gap-y-0.5 text-left text-[13px] font-medium text-ink-muted"
                 >
+                  <span className="sr-only">Details for {task.title}: </span>
                   {meta}
                 </button>
               )}

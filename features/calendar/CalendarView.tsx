@@ -16,6 +16,7 @@ import { LeafCheckbox } from "@/features/tasks/LeafCheckbox";
 import { useTaskActions } from "@/features/tasks/useTaskActions";
 import { cn } from "@/lib/cn";
 import type { Task } from "@/lib/types";
+import { readableOn } from "@/lib/color";
 import { itemsOnDay, refreshAll, useCalendarItems, useFeedRefresher, type CalItem } from "./data";
 import { EventSheet, type EventDraft } from "./EventSheet";
 import { CalendarsSheet } from "./CalendarsSheet";
@@ -207,7 +208,7 @@ function ItemChip({ item, onOpen, compact }: { item: CalItem; onOpen: (i: CalIte
     );
   }
   return (
-    <button onClick={() => onOpen(item)} className={cn("block w-full truncate rounded-lg px-1.5 py-0.5 text-left text-[12px] font-semibold text-white", compact && "py-0")} style={{ background: item.color }}>
+    <button onClick={() => onOpen(item)} className={cn("block w-full truncate rounded-lg px-1.5 py-0.5 text-left text-[12px] font-semibold", compact && "py-0")} style={{ background: item.color, color: readableOn(item.color) }}>
       {item.title}
     </button>
   );
@@ -230,7 +231,7 @@ function MonthGrid({ days, anchor, today, items, onPick }: { days: string[]; anc
               <span className={cn("mb-1 inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-semibold", d === today && "bg-primary text-primary-ink")}>{Number(d.slice(8))}</span>
               <div className="hidden space-y-0.5 md:block">
                 {list.slice(0, 3).map((i) => (
-                  <span key={i.key} className="block truncate rounded-md px-1 text-[11px] font-semibold text-white" style={{ background: i.color }}>
+                  <span key={i.key} className="block truncate rounded-md px-1 text-[11px] font-semibold" style={{ background: i.color, color: readableOn(i.color) }}>
                     {i.title}
                   </span>
                 ))}
@@ -354,7 +355,7 @@ function TimeGrid({
         <div />
         {days.map((d) => (
           <div key={d} className="border-l border-line/60 px-1 py-2 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-ink-faint">{dayName(new Date(`${d}T00:00:00`).getDay())}</p>
+            <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">{dayName(new Date(`${d}T00:00:00`).getDay())}</p>
             <p className={cn("mx-auto mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-full font-display text-[17px] font-semibold", d === today && "bg-primary text-primary-ink")}>{Number(d.slice(8))}</p>
             <div className="mt-1 space-y-0.5 text-left">
               {allDay(d).map((i) => (
@@ -418,11 +419,11 @@ function TimeGrid({
                     role="button"
                     tabIndex={0}
                     onKeyDown={(ev) => ev.key === "Enter" && onOpen(i)}
-                    aria-label={`${i.title}, ${new Date(i.start).toLocaleTimeString("en-IE", { hour: "numeric", minute: "2-digit" })}`}
-                    className={cn("absolute touch-none select-none overflow-hidden rounded-[10px] px-1.5 py-1 text-[12px] font-semibold leading-tight text-white shadow-[0_1px_3px_rgba(0,0,0,0.15)]", drag?.key === i.key && "z-10 opacity-90 shadow-[var(--shadow-lift)]", i.kind === "block" && "border-2 border-dashed border-white/60")}
-                    style={{ top, height, left: `calc(${(col / cols) * 100}% + 2px)`, width: `calc(${100 / cols}% - 4px)`, background: i.color, transform: tx ? `translateX(${tx}px)` : undefined }}
+                    className={cn("absolute touch-none select-none overflow-hidden rounded-[10px] px-1.5 py-1 text-[12px] font-semibold leading-tight shadow-[0_1px_3px_rgba(0,0,0,0.15)]", drag?.key === i.key && "z-10 opacity-90 shadow-[var(--shadow-lift)]", i.kind === "block" && "border-2 border-dashed border-current/40")}
+                    style={{ top, height, left: `calc(${(col / cols) * 100}% + 2px)`, width: `calc(${100 / cols}% - 4px)`, background: i.color, color: readableOn(i.color), transform: tx ? `translateX(${tx}px)` : undefined }}
                   >
                     <span className="line-clamp-2">{i.kind === "block" ? `◷ ${i.title}` : i.title}</span>
+                    <span className="sr-only">, {new Date(i.start).toLocaleTimeString("en-IE", { hour: "numeric", minute: "2-digit" })}</span>
                     {height > 40 && i.location && <span className="block truncate font-medium opacity-85">{i.location}</span>}
                     {!i.readOnly && <span onPointerDown={(ev) => startDrag(ev, i, "resize")} className="absolute inset-x-0 bottom-0 h-2 cursor-ns-resize" aria-hidden="true" />}
                   </div>

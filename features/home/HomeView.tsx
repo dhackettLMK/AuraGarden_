@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Cake, Check, ChevronDown, ChevronUp, Eye, EyeOff, HeartHandshake, Lightbulb, ListTodo, Pencil, Send, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 import { getDB } from "@/lib/db";
@@ -79,7 +79,7 @@ export function HomeView() {
               {line}
             </p>
           </div>
-          <button onClick={() => setEditing((e) => !e)} className={cn("inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-semibold", editing ? "bg-primary text-primary-ink" : "text-ink-muted hover:bg-surface-sunk")} aria-pressed={editing}>
+          <button onClick={() => setEditing((e) => !e)} className={cn("inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-semibold", editing ? "bg-primary text-primary-ink" : "text-ink-muted hover:bg-surface-sunk")} aria-pressed={editing} aria-label={editing ? "Done editing Home" : "Edit Home"}>
             {editing ? <Check size={16} /> : <Pencil size={16} />} <span className="hidden sm:inline">{editing ? "Done" : "Edit Home"}</span>
           </button>
         </section>
@@ -107,8 +107,8 @@ export function HomeView() {
               {w.id === "ring" && <RingWidget />}
               {w.id === "today" && <TodayWidget />}
               {w.id === "projects" && <ProjectsStrip />}
-              {w.id === "garden" && <GardenWindow />}
-              {w.id === "trophies" && <TrophyShelf />}
+              {w.id === "garden" && <Deferred minHeight={240}><GardenWindow /></Deferred>}
+              {w.id === "trophies" && <Deferred minHeight={170}><TrophyShelf /></Deferred>}
               {w.id === "capture" && <QuickCapture />}
               {w.id === "people" && <PeopleWeek />}
             </motion.div>
@@ -119,7 +119,9 @@ export function HomeView() {
       </div>
       {wideRail && (
         <aside className="space-y-5">
-          <GardenWindow compact />
+          <Deferred minHeight={240}>
+            <GardenWindow compact />
+          </Deferred>
           <TodayWidget />
         </aside>
       )}
@@ -252,7 +254,8 @@ function GardenWindow({ compact }: { compact?: boolean }) {
   const byItem = useMemo(() => new Map((records ?? []).map((r) => [r.itemId, r])), [records]);
   const next = game.nextUnlock;
   return (
-    <Link href="/garden" className="card group block overflow-hidden" aria-label="Open the garden">
+    <Link href="/garden" className="card group block overflow-hidden">
+      <span className="sr-only">Open the garden: </span>
       <div className="pointer-events-none">
         <GardenScene layout="wide" unlocked={unlocked} records={byItem} total={game.total} timeOfDay={timeOfDay(now, settings?.timezone)} season={seasonOf(now, settings?.timezone)} oscar={{ level: game.level, outfit: settings?.oscarOutfit ?? null }} tulipColor={settings?.tulipColor} title="Your garden" ambient={!compact} />
       </div>
@@ -439,4 +442,19 @@ function LinkReminder() {
       </button>
     </section>
   );
+}
+
+/** Renders heavier widgets once the page has painted and the main thread is idle. */
+function Deferred({ children, minHeight }: { children: React.ReactNode; minHeight: number }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+    if (ric) {
+      const id = ric(() => setReady(true), { timeout: 800 });
+      return () => (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(id);
+    }
+    const t = setTimeout(() => setReady(true), 200);
+    return () => clearTimeout(t);
+  }, []);
+  return ready ? <>{children}</> : <div className="skeleton rounded-[20px]" style={{ minHeight }} aria-hidden="true" />;
 }

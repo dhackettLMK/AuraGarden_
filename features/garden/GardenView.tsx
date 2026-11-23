@@ -152,7 +152,7 @@ function GardenInner() {
             <Button variant="ghost" size="sm" onClick={() => setWardrobe(true)} aria-label="Oscar's wardrobe">
               <Shirt size={16} /> <span className="hidden sm:inline">Wardrobe</span>
             </Button>
-            <Button variant={decor ? "soft" : "ghost"} size="sm" onClick={() => setDecor((d) => !d)} aria-pressed={decor}>
+            <Button variant={decor ? "soft" : "ghost"} size="sm" onClick={() => setDecor((d) => !d)} aria-pressed={decor} aria-label="Decor mode">
               <Move size={16} /> <span className="hidden sm:inline">{decor ? "Done" : "Decor"}</span>
             </Button>
             <Button variant="ghost" size="sm" onClick={savePicture} aria-label="Save a picture of my garden">
@@ -268,8 +268,8 @@ function NextUp({ total, next }: { total: number; next: typeof UNLOCKS }) {
           </div>
         ))}
         {next.length > 3 && (
-          <div className="flex h-12 items-center justify-center rounded-xl bg-surface-sunk px-3 font-display text-lg font-semibold text-ink-faint" aria-label={`${next.length - 3} more surprises`}>
-            ? <span className="ml-1 text-sm">×{next.length - 3}</span>
+          <div className="flex h-12 items-center justify-center rounded-xl bg-surface-sunk px-3 font-display text-lg font-semibold text-ink-muted" aria-label={`${next.length - 3} more surprises`}>
+            ? <span className="ml-1 text-sm text-ink-muted">×{next.length - 3}</span>
           </div>
         )}
       </div>

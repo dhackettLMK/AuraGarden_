@@ -39,18 +39,19 @@ export function JoinView() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[radial-gradient(120%_80%_at_50%_0%,#FFF7EC_0%,var(--background)_60%)] px-6 text-center">
       <Oscar size={130} pose={state.kind === "bad" ? "thinking" : "wave"} />
-      {state.kind === "checking" && <p className="text-lg font-semibold text-ink-muted">Checking your garden link…</p>}
+      <h1 className="font-display text-[44px] font-semibold leading-tight">Your garden link</h1>
+      {state.kind === "checking" && <p className="text-lg font-semibold text-ink-muted">Checking it…</p>}
       {state.kind === "joining" && <p className="text-lg font-semibold text-ink-muted">Bringing your garden over…</p>}
       {state.kind === "bad" && (
         <>
-          <h1 className="font-display text-3xl font-semibold">Hmm, that didn&apos;t work</h1>
-          <p className="max-w-sm text-ink-muted">{state.message}</p>
+          <h2 className="text-lg font-semibold">Hmm, that didn&apos;t work</h2>
+          <p className="max-w-xs text-[15px] text-ink-muted">{state.message}</p>
           <Button onClick={() => router.replace("/")}>Go to AuraGarden</Button>
         </>
       )}
       {state.kind === "confirm" && (
         <>
-          <h1 className="max-w-md font-display text-3xl font-semibold leading-tight">Open {state.name ? `${state.name}'s` : "this"} garden on this device?</h1>
+          <h2 className="max-w-md text-xl font-semibold leading-snug">Open {state.name ? `${state.name}'s` : "this"} garden on this device?</h2>
           {state.replaces && <p className="max-w-sm rounded-2xl bg-gentle/60 px-4 py-3 text-[15px] text-gentle-ink">This device already has a garden. Opening this one replaces it here (the other garden is still safe under its own link).</p>}
           <div className="flex w-full max-w-xs flex-col gap-2">
             <Button

@@ -82,7 +82,7 @@ export function InlineEdit({
         }
       }}
       className={cn(
-        "-mx-1.5 cursor-text rounded-lg px-1.5 transition-colors hover:bg-surface-sunk/70",
+        "-mx-1.5 inline-block min-h-6 cursor-text rounded-lg px-1.5 transition-colors hover:bg-surface-sunk/70",
         !value && "text-ink-faint",
         className,
       )}

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { seed, waitForCard } from "./helpers";
+import { pillTotal, seed, waitForCard } from "./helpers";
 
 async function grant(page: Page, n: number) {
   await page.evaluate((x) => (window as unknown as { __ag: { grant: (n: number) => Promise<void> } }).__ag.grant(x), n);
@@ -33,8 +33,7 @@ test.describe("garden unlocks", () => {
     // Trophy bonuses arrive with big grants, so top up to just under 50,000.
     await grant(page, 40_000);
     await waitForCard(page);
-    const label = await page.locator("#aura-pill").getAttribute("aria-label");
-    const now = Number(label!.match(/Aura ([\d,]+)/)![1].replace(/,/g, ""));
+    const now = await pillTotal(page);
     expect(now).toBeLessThan(49_990);
     await grant(page, 49_990 - now);
     await waitForCard(page);

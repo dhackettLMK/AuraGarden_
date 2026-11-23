@@ -14,8 +14,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | 6 | Thoughts, People, Calendar | ✅ Done |
 | 7 | Home and the unwrap | ✅ Done |
 | 8 | Sync and PWA | ✅ Done |
-| 9 | Polish | ⏳ Next |
-| 10 | Ship | ⬜ |
+| 9 | Polish | ✅ Done |
+| 10 | Ship | ⏳ Next |
 
 ## Stack (versions installed and checked)
 
@@ -86,6 +86,11 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **`GARDENS_PER_IP_PER_DAY`** (default 20, per brief) exists only so automated test servers can create many gardens; don't set it on Vercel.
 - **PWA:** `app/manifest.ts`, Oscar icons from `scripts/make-icons.tsx` (rendered from the real Oscar component), hand-written `public/sw.js` (network-first pages with cached fallback, cache-first static assets, APIs never cached), registered in production only. iPhone: onboarding copies the link before install; the installed app with no garden leads with "Paste my garden link".
 - **Running the sync tests locally:** start Postgres, apply `supabase/setup.sql`, run the server with `DATABASE_URL=… GARDENS_PER_IP_PER_DAY=100000`, then `SYNC_E2E=1 npx playwright test`.
+
+- **Lighthouse (mobile, lab, local `next start`).** Entry pages with a fresh profile: `/` 97 / 100 / 100, `/laura` 97 / 100 / 100, `/join` 100 / 100 / 100 (Performance / Accessibility / Best Practices). App pages with a seeded garden (`scripts/seed-profile.ts`): Home 90, Calendar 100, People 100, Thoughts 99, Projects 99, My List 98, Garden 97, Tasks 97, Trophies 96 for Performance; Accessibility 100 and Best Practices 100 on all of them.
+- **What got them there:** the garden app shell and Home load lazily and are prefetched in parallel with the IndexedDB read; heavy sheets (quick add with chrono, the Tiptap task editor, the Aura sheet, the task picker, onboarding, moment cards) mount on first open and are prefetched when idle; Home defers the garden window and trophy shelf until idle; `/laura` paints its arrival without waiting for JS (CSS fade-in); CSS is inlined; modern browserslist targets.
+- **Accessibility details:** `ink-faint` and the gold aura text stop darkened to pass AA; text on calendar colours picks dark or light ink by contrast (`lib/color.ts`); accessible names include visible text; sortable lists keep `li` semantics (drag attributes live on an inner wrapper); headings in order; 24 px minimum targets.
+- **Reduced motion / sound off** are covered by `e2e/motion-sound.spec.ts` (no flying number, no confetti canvas, every CSS animation and transition effectively instant; no oscillators or noise sources start with sound off).
 
 ## Placeholders
 

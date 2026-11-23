@@ -10,8 +10,10 @@ import { playChime, playLevelUp, playUnlock } from "@/lib/sound";
 import { useGame } from "@/lib/game/GameProvider";
 import { useSettings } from "@/lib/hooks";
 import { STACK_WINDOW_MS } from "@/config/aura";
-import { MomentCard } from "./MomentCard";
-import { RealmSequence } from "./RealmSequence";
+import dynamic from "next/dynamic";
+
+const MomentCard = dynamic(() => import("./MomentCard").then((m) => m.MomentCard), { ssr: false });
+const RealmSequence = dynamic(() => import("./RealmSequence").then((m) => m.RealmSequence), { ssr: false });
 
 type Fly = { seq: number; base: number; multiplier: number; amount: number; x: number; y: number; small?: boolean };
 
@@ -98,11 +100,7 @@ export function CelebrationLayer() {
       <div aria-live="polite" className="sr-only">
         {oscar ? `Plus ${formatAura(oscar.amount, "full")} aura. ${oscar.line}` : ""}
       </div>
-      {current?.kind === "realm" ? (
-        <RealmSequence event={current} onClose={() => setCurrent(null)} />
-      ) : (
-        <MomentCard event={current} onClose={() => setCurrent(null)} />
-      )}
+      {current?.kind === "realm" ? <RealmSequence event={current} onClose={() => setCurrent(null)} /> : current ? <MomentCard event={current} onClose={() => setCurrent(null)} /> : null}
     </>
   );
 }

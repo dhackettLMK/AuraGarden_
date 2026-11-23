@@ -175,9 +175,9 @@ function SectionBlock({
           {(handle) => (
             <div className="mb-2 flex items-center gap-1">
               <SectionGrip handle={handle} label={`Reorder section ${s.name}`} />
-              <h3 className="min-w-0 flex-1 font-display text-[18px] font-semibold">
+              <h2 className="min-w-0 flex-1 font-display text-[18px] font-semibold">
                 <InlineEdit value={s.name} onSave={(v) => renameSection(s.id, v)} label="Section name" />
-              </h3>
+              </h2>
               <span className="text-sm tabular text-ink-faint">{bucket.tasks.length || ""}</span>
               <SectionMenu section={s} />
             </div>
@@ -266,7 +266,7 @@ function SectionGrip({ handle, label }: { handle: React.HTMLAttributes<HTMLButto
   const { setRef, ...rest } = handle;
   return (
      
-    <button {...rest} ref={setRef} className="-ml-1.5 inline-flex h-8 w-6 cursor-grab touch-none items-center justify-center rounded-lg text-ink-faint/70 hover:text-ink-muted" aria-label={label}>
+    <button {...rest} ref={setRef} className="-ml-2 inline-flex h-8 w-8 cursor-grab touch-none items-center justify-center rounded-lg text-ink-faint/70 hover:text-ink-muted" aria-label={label}>
       <GripVertical size={15} />
     </button>
   );

@@ -1,5 +1,5 @@
-import { HomeView } from "@/features/home/HomeView";
+import { HomeEntry } from "@/features/home/HomeEntry";
 
 export default function Page() {
-  return <HomeView />;
+  return <HomeEntry />;
 }

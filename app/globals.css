@@ -12,7 +12,7 @@
   --surface-sunk: #f3ede3;
   --ink: #2e2a26;
   --ink-muted: #6f665d;
-  --ink-faint: #8a8076;
+  --ink-faint: #74695f;
   --line: #e9e1d4;
   --primary: #4f7a5a;
   --primary-ink: #ffffff;
@@ -30,7 +30,7 @@
   /* Deeper aura stops for text on light backgrounds (AA contrast). */
   --aura-ink-1: #7656cc;
   --aura-ink-2: #c04b86;
-  --aura-ink-3: #a8700a;
+  --aura-ink-3: #8f5f08;
   --shadow-tint: rgba(79, 122, 90, 0.12);
   --shadow-tint-strong: rgba(79, 122, 90, 0.2);
   --accent: var(--primary);
@@ -839,4 +839,13 @@ html.reduce-motion svg * {
 }
 .from-unwrap nav[aria-label="Main"] {
   animation: nav-enter 600ms 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes fade-up {
+  from {
+    opacity: 0.01;
+    transform: translateY(10px);
+  }
+}
+.fade-up {
+  animation: fade-up 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
