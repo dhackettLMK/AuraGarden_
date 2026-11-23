@@ -10,8 +10,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | 2 | Core editing | ✅ Done |
 | 3 | Aura and Oscar | ✅ Done |
 | 4 | The garden world | ✅ Done |
-| 5 | Achievements | ⏳ Next |
-| 6 | Thoughts, People, Calendar | ⬜ |
+| 5 | Achievements | ✅ Done |
+| 6 | Thoughts, People, Calendar | ⏳ Next |
 | 7 | Home and the unwrap | ⬜ |
 | 8 | Sync and PWA | ⬜ |
 | 9 | Polish | ⬜ |
@@ -60,6 +60,12 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Realm entries** (`realm-meadow` etc.) are ledger unlocks that trigger the full-screen sequence instead of a card; the 50,000 "gate" item is the last Realm 1 unlock.
 - **Oscar in the garden** wanders between waypoints every 7 s, naps (sleepy pose), swims in the pool once it exists, sleeps at night; tapping pets him (hearts, `petCount` in settings).
 
+- **Achievements: 195 built in** (`config/achievements.ts`) plus 6 per project she creates. Beyond the brief's families I added three with time-even thresholds so later years keep paying out: *Days in the garden* (active days), *Best day* (aura in one day) and *Project milestones* (tasks per starter project). Trophy boost with all of them is about ×3 rather than "about ×2.5".
+- **Extra realm decor:** realms 2–10 each have their signature unlocks plus four small decor pieces (12 per realm instead of "about eight") to keep the later cadence up. Realms 2 and 3 have all twelve drawn.
+- **Economy:** `docs/ECONOMY.md`. Every aura target (realm 2 ~month 1.3, realm 4 ~5.8, 1M ~7.9, 10M ~17, 100M ~40) is met and 1B / level 1,000 stay multi-year. Cadence passes on the default seed when level-ups count as "something new"; on other seeds month 1 and year 1 land a day or two over target, and with level-ups excluded later years have gaps of ~2 months. See open questions.
+- **Rank achievements** celebrate with a rank card (belt icon for Martial Arts). Only the latest three trophies from one jump get a card; all are recorded and paid.
+- **`scripts/verify.sh`** runs typecheck, lint, unit tests and build and fails fast; use it before every commit.
+
 ## Placeholders
 
 - **Swap 'N' Serve Cup logo.** David pasted a cleaner (non-distressed) version of the Cup logo in chat on 23 Nov. Pasted images can't be saved from chat, so the app uses the existing `assets/logos/swapnserve-cup-logo.png`. To swap it in, upload the new PNG over that path (same name). The build copies it to `public/brand/` and every screen picks it up.
@@ -68,7 +74,7 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 
 ## Open questions for David
 
-- (none yet)
+- **Cadence target "something new every 2 weeks in years 2–5".** Met when level-ups count; strictly counting only unlocks/trophies/ranks, late years have up to ~2-month gaps because the brief's ladders are geometric. If you want it strict, the next lever is more small decor unlocks per later realm (cheap to add in `config/realms.ts`).
 
 ## How to run
 

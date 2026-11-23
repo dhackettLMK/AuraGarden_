@@ -43,7 +43,7 @@ export function Header() {
     <header className="sticky top-0 z-30 bg-background/88 pt-safe backdrop-blur-md supports-[backdrop-filter]:bg-background/75">
       <div className="mx-auto flex h-16 max-w-[1180px] items-center gap-2 px-4 md:px-8">
         <h1
-          className={`min-w-0 flex-1 truncate font-display font-semibold ${greeting ? "text-[20px] md:text-[28px]" : "text-[22px] md:text-[28px]"}`}
+          className={`min-w-0 flex-1 truncate font-display font-semibold text-[20px] md:text-[28px]`}
         >
           {title}
           {name && <span className="hidden sm:inline">, {name}</span>}

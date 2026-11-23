@@ -1,7 +1,7 @@
-import { ComingSoon } from "@/features/ComingSoon";
+import { TrophyRoom } from "@/features/trophies/TrophyRoom";
 
 export const metadata = { title: "Trophies" };
 
 export default function Page() {
-  return <ComingSoon name="Trophies" />;
+  return <TrophyRoom />;
 }

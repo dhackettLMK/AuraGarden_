@@ -28,3 +28,18 @@ export async function dbCount(page: Page, table: string, filter = "r => !r.delet
     [table, filter] as const,
   );
 }
+
+/** Dismiss moment cards until one with this heading shows (or none remain). */
+export async function waitForCard(page: Page, heading?: string) {
+  let quiet = 0;
+  for (let i = 0; i < 30; i++) {
+    const dialog = page.getByRole("dialog");
+    if (await dialog.first().isVisible().catch(() => false)) {
+      quiet = 0;
+      if (heading && (await dialog.getByRole("heading", { name: heading }).count())) return;
+      const btn = dialog.getByRole("button", { name: /^(Later|Lovely)$/ });
+      if (await btn.first().isVisible().catch(() => false)) await btn.first().click();
+    } else if (!heading && ++quiet >= 5) return;
+    await page.waitForTimeout(800);
+  }
+}

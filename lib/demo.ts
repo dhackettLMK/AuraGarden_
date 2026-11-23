@@ -68,9 +68,9 @@ export async function previewMoment(kind: string) {
 }
 
 /** Grants aura directly (tests only), then runs the usual unlock checks. */
-export async function grant(amount: number) {
+export async function grant(amount: number, projectId: string | null = null) {
   const { awardAura, readGameContext } = await import("./game/aura");
   const before = (await readGameContext()).total;
-  await awardAura({ id: `bonus:grant:${Date.now()}`, base: amount, reason: "Test grant", source: "bonus", multiply: false });
+  await awardAura({ id: `bonus:grant:${Date.now()}`, base: amount, reason: "Test grant", source: "bonus", multiply: false, projectId });
   await afterAward(before);
 }

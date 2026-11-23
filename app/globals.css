@@ -786,3 +786,12 @@ html.reduce-motion svg * {
     radial-gradient(60% 50% at 20% 40%, rgba(180, 200, 190, 0.35), transparent 70%),
     radial-gradient(50% 40% at 75% 60%, rgba(180, 200, 190, 0.3), transparent 70%);
 }
+.celestial-badge {
+  filter: drop-shadow(0 0 10px rgba(245, 159, 198, 0.7));
+  animation: celestial 4s ease-in-out infinite;
+}
+@keyframes celestial {
+  50% {
+    filter: drop-shadow(0 0 18px rgba(183, 156, 242, 0.9)) hue-rotate(25deg);
+  }
+}

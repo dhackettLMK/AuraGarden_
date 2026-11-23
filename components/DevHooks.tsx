@@ -13,9 +13,9 @@ export function DevHooks() {
         const { seedDemo } = await import("@/lib/demo");
         await seedDemo(kind);
       },
-      grant: async (n: number) => {
+      grant: async (n: number, projectId?: string) => {
         const { grant } = await import("@/lib/demo");
-        await grant(n);
+        await grant(n, projectId ?? null);
       },
       moment: async (kind: string) => {
         const { previewMoment } = await import("@/lib/demo");

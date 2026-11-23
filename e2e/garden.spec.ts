@@ -1,21 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
-import { seed } from "./helpers";
+import { seed, waitForCard } from "./helpers";
 
 async function grant(page: Page, n: number) {
   await page.evaluate((x) => (window as unknown as { __ag: { grant: (n: number) => Promise<void> } }).__ag.grant(x), n);
-}
-
-/** Dismiss moment cards until one with this heading shows (or none remain). */
-async function waitForCard(page: Page, heading?: string) {
-  for (let i = 0; i < 24; i++) {
-    const dialog = page.getByRole("dialog");
-    if (await dialog.first().isVisible().catch(() => false)) {
-      if (heading && (await dialog.getByRole("heading", { name: heading }).count())) return;
-      const btn = dialog.getByRole("button", { name: /^(Later|Lovely)$/ });
-      if (await btn.first().isVisible().catch(() => false)) await btn.first().click();
-    } else if (!heading && i > 3) return;
-    await page.waitForTimeout(800);
-  }
 }
 
 test.describe("garden unlocks", () => {
@@ -43,7 +30,13 @@ test.describe("garden unlocks", () => {
   test("crossing 50,000 plays the new-realm sequence and doubles the realm boost", async ({ page }) => {
     await seed(page, "laura");
     await page.goto("/tasks");
-    await grant(page, 49_990);
+    // Trophy bonuses arrive with big grants, so top up to just under 50,000.
+    await grant(page, 40_000);
+    await waitForCard(page);
+    const label = await page.locator("#aura-pill").getAttribute("aria-label");
+    const now = Number(label!.match(/Aura ([\d,]+)/)![1].replace(/,/g, ""));
+    expect(now).toBeLessThan(49_990);
+    await grant(page, 49_990 - now);
     await waitForCard(page);
     await page.getByRole("checkbox", { name: /Complete "Ring Nana"/ }).click();
     await waitForCard(page, "The Wildflower Meadow");

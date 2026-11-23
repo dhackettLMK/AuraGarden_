@@ -11,7 +11,8 @@ beforeEach(async () => {
   await createGarden({ name: "Laura", giftSlug: "laura" });
 });
 
-const total = async () => totalOf(await getDB().aura_ledger.toArray());
+// Totals exclude trophy bonuses, which arrive separately (and unmultiplied).
+const total = async () => totalOf((await getDB().aura_ledger.toArray()).filter((r) => r.source !== "achievement" && r.source !== "rank"));
 const taskAwards = async () => (await getDB().aura_ledger.toArray()).filter((r) => r.source === "task");
 
 describe("awardAura through completeTask", () => {
@@ -23,6 +24,8 @@ describe("awardAura through completeTask", () => {
     expect(awards[0].amount).toBe(25);
     expect(awards[0].multiplier).toBe(1);
     expect(await total()).toBe(35);
+    const trophies = (await getDB().achievements.toArray()).map((a) => a.achievementId);
+    expect(trophies).toContain("tasks-1");
   });
 
   it("a double tap awards once", async () => {
