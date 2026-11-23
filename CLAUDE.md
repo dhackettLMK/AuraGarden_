@@ -10,6 +10,11 @@ This repo builds AuraGarden, a gamified life OS that David Hackett is giving to 
 - After every phase: typecheck, lint, tests and `next build` must pass. Take Playwright screenshots at 390×844 and 1440×900 in light and dark, look at them critically, and fix anything that isn't beautiful.
 - Game numbers (unlock ladder, realms, levels, boosts, achievements, ranks, Oscar's lines) live in `config/`, never inside components.
 
+## Already set up (don't recreate)
+
+- Vercel project `auragarden` is linked to this repo with its env vars set. Every push to `main` deploys to https://auragarden.vercel.app.
+- The Supabase database is live and matches `supabase/setup.sql`. You can't change it from here: use only the `ag_*` functions in brief section 12.3.
+
 ## Hard rules
 
 - This repo is public. Never commit secrets, keys, `.env*` files, or private details like email addresses, phone numbers or anyone's contacts.

@@ -33,8 +33,8 @@ Open http://localhost:3000. No environment variables are needed: without them th
 
 | Variable | Purpose |
 | --- | --- |
-| `SUPABASE_URL` | Supabase Project URL. With the secret key, turns sync on. |
-| `SUPABASE_SECRET_KEY` | Supabase secret key. Server only; never exposed to the browser. |
+| `SUPABASE_URL` | Supabase Project URL. With the publishable key, turns sync on. |
+| `SUPABASE_PUBLISHABLE_KEY` | Supabase publishable key. Server only (no `NEXT_PUBLIC_`); it can only call the `ag_*` functions. |
 | `CRON_SECRET` | Protects `/api/keepalive`; Vercel sends it to the daily cron automatically. |
 | `DATABASE_URL` | Dev and tests only: a Postgres connection that runs the same SQL functions instead of Supabase. |
 | `GARDENS_PER_IP_PER_DAY` | Tests only: raises the 20-a-day new-garden limit. |
@@ -44,13 +44,13 @@ Never commit `.env*` files; the repo is public.
 
 ## Supabase
 
-Run `supabase/setup.sql` once in the Supabase SQL Editor (it's the same as `supabase/migrations/0001_init.sql`). It creates the tables (`gardens`, `records`, `rate_limits`, `heartbeat`) with row-level security on and no policies, and SQL functions (`ag_sync`, `ag_create_garden`, `ag_rotate_garden`, …) that only the service role can execute. The browser never talks to Supabase: everything goes through `/api/garden` and `/api/sync`, which store only the SHA-256 of each garden key.
+The live database (project `auragarden`, Ireland) is already set up from `supabase/setup.sql` plus `supabase/migrations/`; don't change it from the app. Tables (`gardens`, `records`, `rate_limits`, `heartbeat`) have row-level security on, no policies and no grants. The server routes call six functions over RPC with the publishable key: `ag_create_garden`, `ag_check_garden`, `ag_sync`, `ag_rotate_garden`, `ag_delete_garden` and `ag_heartbeat` (brief 12.3). They take the raw garden key and keep only its SHA-256; creation and sync are rate-limited inside them. The browser never talks to Supabase: everything goes through `/api/garden` and `/api/sync`. Sync timestamps are epoch milliseconds in the app and `timestamptz` in the database; `/api/sync` converts between them.
 
-To run the sync end-to-end tests locally, start any Postgres, apply `supabase/setup.sql`, start the app with `DATABASE_URL=postgres://… GARDENS_PER_IP_PER_DAY=100000 npx next start -p 3100`, then `SYNC_E2E=1 npx playwright test`.
+To run the sync end-to-end tests locally, start any Postgres, create the roles `anon` and `authenticated`, apply `supabase/setup.sql` and the migrations, start the app with `DATABASE_URL=postgres://… GARDENS_PER_IP_PER_DAY=100000 npx next start -p 3100`, then `SYNC_E2E=1 npx playwright test`.
 
 ## Deploys
 
-Vercel builds from `main` on every push. Functions run in Dublin (`dub1`), and `vercel.json` schedules the daily keep-alive. See `DEPLOY.md` for the click-by-click setup.
+Vercel project `auragarden` builds from `main` on every push (production: https://auragarden-nexeire.vercel.app). Functions run in Dublin (`dub1`), and `vercel.json` schedules the daily keep-alive. See `DEPLOY.md` for the click-by-click setup.
 
 ## How it's built
 

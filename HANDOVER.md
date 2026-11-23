@@ -4,7 +4,7 @@ Hi David. AuraGarden is built, tested and ready to deploy. Here's everything you
 
 ## The live URL
 
-Your Vercel project `auragarden` is set up and builds every push. Once the code is merged into `main` (and `SUPABASE_SECRET_KEY` is added in Vercel, see below), Laura's link is:
+Live. Every push to `main` deploys automatically. Laura's link is:
 
 **`https://auragarden-nexeire.vercel.app/laura`**
 
@@ -37,8 +37,7 @@ She pastes the link and her events appear (repeating ones included), refreshed e
 
 **You:**
 
-- **Deploy** (`DEPLOY.md`): Supabase project + `supabase/setup.sql`, then Vercel with three environment variables. Test it in a private tab first.
-- **Add `SUPABASE_SECRET_KEY` in Vercel** (Settings → Environment Variables, mark it Sensitive), then redeploy. The project has `SUPABASE_URL` and `CRON_SECRET` but not the secret key; without it sync is off and each garden lives on one device. Make sure `supabase/setup.sql` has been run in that Supabase project.
+- **Test it yourself first** in a private tab (`DEPLOY.md` step 1), then delete your test garden from Settings.
 - **Print the gift card.** `gift/auragarden-card.pdf` and `.png` (A6, 3 mm bleed) have the QR pointing at `https://auragarden-nexeire.vercel.app/laura`. If you add a custom domain, re-run `SITE_URL=<url> npx tsx scripts/make-gift-card.tsx` (or ask Claude Code to).
 - **Swap in the cleaner Swap 'N' Serve Cup logo** you pasted in chat: upload it over `assets/logos/swapnserve-cup-logo.png` (same name). Pasted images can't be saved from chat, so the app currently uses the distressed version already in the repo.
 - **Check the calendar how-tos once** on a real account. The brief asked me to verify them against Google, Apple and Microsoft's help pages, but those sites aren't reachable from the build environment, so they're written carefully from knowledge.

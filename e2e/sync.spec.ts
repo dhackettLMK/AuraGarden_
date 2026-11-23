@@ -45,7 +45,7 @@ test.describe("sync", () => {
     const key = await gardenKey(a);
 
     await b.goto(`/join#k=${key}`);
-    await expect(b.getByRole("heading", { name: "Open Laura's garden on this device?" })).toBeVisible();
+    await expect(b.getByRole("heading", { name: "Open this garden on this device?" })).toBeVisible();
     await b.getByRole("button", { name: "Open garden" }).click();
     await expect(b).toHaveURL(/\/$/);
     expect(b.url()).not.toContain(key);

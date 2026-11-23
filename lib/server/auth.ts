@@ -2,24 +2,37 @@ import "server-only";
 import { isValidKeyShape, sha256Hex } from "@/lib/key";
 import { getStore } from "./store";
 
-/**
- * Read the garden key from `Authorization: Garden <key>`. Returns the garden
- * id (the SHA-256 of the key) or null. Never log the header.
- */
-export async function gardenIdFrom(req: Request): Promise<string | null> {
+/** Read the garden key from `Authorization: Garden <key>`, or null. Never log the header. */
+export function gardenKeyFrom(req: Request): string | null {
   const h = req.headers.get("authorization") ?? "";
   const m = h.match(/^Garden\s+([A-Za-z0-9_-]+)$/);
-  if (!m || !isValidKeyShape(m[1])) return null;
-  return sha256Hex(m[1]);
+  return m && isValidKeyShape(m[1]) ? m[1] : null;
 }
 
-/** A valid key for a garden that exists (when sync is configured). */
-export async function requireGarden(req: Request): Promise<{ id: string } | null> {
-  const id = await gardenIdFrom(req);
-  if (!id) return null;
+/**
+ * A valid key for a garden that exists (when sync is configured). Returns the
+ * key and its SHA-256 (the garden id, safe to use in rate-limit buckets).
+ */
+export async function requireGarden(req: Request): Promise<{ key: string; id: string } | null> {
+  const key = gardenKeyFrom(req);
+  if (!key) return null;
   const store = getStore();
-  if (store && !(await store.gardenExists(id))) return null;
-  return { id };
+  if (store) {
+    try {
+      if (!(await store.checkGarden(key))) return null;
+    } catch {
+      return null;
+    }
+  }
+  return { key, id: await sha256Hex(key) };
+}
+
+/**
+ * The caller's IP hashed with CRON_SECRET as a salt, for the database's
+ * per-client limit on new gardens. The raw IP never leaves this server.
+ */
+export async function clientHash(req: Request): Promise<string> {
+  return sha256Hex(`${process.env.CRON_SECRET ?? "auragarden"}:${clientIp(req)}`);
 }
 
 export function json(data: unknown, status = 200, headers: Record<string, string> = {}) {

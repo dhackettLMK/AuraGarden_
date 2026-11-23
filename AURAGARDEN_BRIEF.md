@@ -6,18 +6,19 @@ A gift from David Hackett to Laura Quinn. Last updated 23 Nov 2026.
 
 ## 0. Before you start (for David)
 
-Everything Claude Code needs is already in this repo (`dhackettLMK/AuraGarden_`): this brief, `CLAUDE.md`, and the logos in `assets/logos/`. Open the repo in Claude Code (web, desktop or phone) and paste the kickoff message.
+Everything Claude Code needs is already in this repo (`dhackettLMK/AuraGarden_`): this brief, `CLAUDE.md`, the logos in `assets/logos/`, and the live database schema in `supabase/`. Hosting and the database are already set up, so every push to `main` goes live at **https://auragarden.vercel.app** and Laura's gift will be at **https://auragarden.vercel.app/laura**. Open the repo in Claude Code (web, desktop or phone) and paste the kickoff message.
 
 - [x] Brief, `CLAUDE.md` and logos are in the repo
 - [x] Gift tag decided: "For Laura, grow something great." signed "David" with a heart
 - [x] No accounts: anyone can start a garden; Laura's is private through her secret garden link
-- [ ] Free Vercel and Supabase accounts (you'll click through two dashboards at the end; section 14 has the steps)
-- [ ] Optional: a custom domain. Until then it ships on the free `.vercel.app` address
+- [x] Vercel project `auragarden` linked to this repo, with its environment variables set
+- [x] Supabase project `auragarden` (Ireland) with the database from `supabase/setup.sql` applied and tested
+- [ ] Optional: a custom domain later. Ask Claude in chat (where Vercel is connected) to add it
 
 **Kickoff message to paste into Claude Code:**
 
 ```
-Read CLAUDE.md and AURAGARDEN_BRIEF.md end to end before writing any code. They are the full spec for AuraGarden. Build it phase by phase as section 13 describes, verify and commit every phase, and keep PROGRESS.md up to date. At the end, prepare the deploy as section 14 describes. Never block on missing inputs: use tasteful placeholders and list them at handover.
+Read CLAUDE.md and AURAGARDEN_BRIEF.md end to end before writing any code. They are the full spec for AuraGarden. Build it phase by phase as section 13 describes. Verify, commit and push every phase (pushing to main deploys it to auragarden.vercel.app), and keep PROGRESS.md up to date. Never block on missing inputs: use tasteful placeholders and list them at handover.
 ```
 
 Claude Code sessions can time out on a build this size. If a session ends, start a new one with: `Read CLAUDE.md, AURAGARDEN_BRIEF.md and PROGRESS.md, then carry on from the next unfinished phase.`
@@ -50,7 +51,7 @@ These twelve rules override anything else in this brief if they ever conflict.
 4. **Aura only goes up.** Missed days never cost aura, garden items, achievements or levels. Un-ticking a task reverses only that task's aura.
 5. **Huge numbers stay smooth.** Aura, levels and boosts work correctly from 0 into the trillions, with readable formatting (section 7.6).
 6. **No accounts, still private.** No sign-up, no passwords. A garden opens only with its secret garden key (link or QR code). The database is reachable only through the app's own server routes.
-7. **Local-first.** The app works instantly and offline from on-device storage. With Supabase env vars set it syncs across devices; without them it runs device-only, so it can be previewed with zero setup.
+7. **Local-first.** The app works instantly and offline from on-device storage. With `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` set (they are, on Vercel) it syncs across devices; without them it runs device-only, so it can be previewed with zero setup.
 8. **Mobile-first.** Flawless at 375–430 px wide, primary actions within thumb reach, installable to the home screen as a PWA.
 9. **Accessible.** Keyboard navigable, visible focus rings, WCAG AA contrast, honours `prefers-reduced-motion`. Sound and haptics each have an off switch.
 10. **Fast.** Lighthouse mobile scores of 90+ for Performance, Accessibility and Best Practices.
@@ -59,7 +60,7 @@ These twelve rules override anything else in this brief if they ever conflict.
 
 **Done means:**
 
-- [ ] Live on the Vercel URL (and the custom domain, if David adds one), from a passing production build
+- [ ] Live at https://auragarden.vercel.app (and the custom domain, if David adds one), from a passing production build
 - [ ] Laura can open `/laura` on her phone, unwrap, start her garden, add it to her home screen, save her secret link, and open the same garden on a laptop by scanning its QR code
 - [ ] Every acceptance check in section 13 passes
 - [ ] Typecheck, lint, unit tests and Playwright tests all pass
@@ -81,7 +82,7 @@ Next.js on Vercel, local-first on IndexedDB, with optional sync through a Supaba
 | Drag and drop | dnd-kit | Reorder lists, kanban, drag tasks onto the calendar |
 | Local database | Dexie (IndexedDB) | The UI's single source of truth |
 | State | Zustand for UI state; `dexie-react-hooks` live queries for data | |
-| Sync store | Supabase Postgres, reached only from server routes with the secret key | No Supabase Auth, no Storage buckets |
+| Sync store | Supabase Postgres, already live. Server routes call its `ag_*` SQL functions over RPC with the publishable key | No table access, no Supabase Auth, no Storage buckets (section 12.3) |
 | Rich text | Tiptap | Thoughts and project notes |
 | Dates | date-fns plus chrono-node | Natural-language input like "fri 5pm" |
 | Calendar parsing | node-ical or ical.js with RRULE expansion, server-side | Section 6.7 |
@@ -90,7 +91,7 @@ Next.js on Vercel, local-first on IndexedDB, with optional sync through a Supaba
 | Sound | Web Audio API, synthesized in code | No audio files to license |
 | PWA | Web manifest plus service worker via Serwist or the current maintained equivalent | Home-screen install, offline shell |
 | Tests | Vitest with Testing Library; Playwright for e2e and screenshots | |
-| Hosting | Vercel; functions in `dub1` (Dublin) if the plan allows | |
+| Hosting | Vercel project `auragarden`, already linked to this repo; functions in `dub1` (Dublin) | Section 14 |
 
 **Architecture rules**
 
@@ -611,61 +612,44 @@ The default grey shadcn look, purple gradients everywhere, heavy glassmorphism, 
 
 ## 12. Data, sync and privacy
 
-There are no accounts. Each garden lives on the device in IndexedDB and, when sync is configured, is mirrored to Supabase under a secret garden key that only its owner holds. Whoever has the key can open the garden; nobody else can.
+There are no accounts. Each garden lives on the device in IndexedDB and, when sync is configured, is mirrored to Supabase under a secret garden key that only its owner holds. Whoever has the key can open the garden; nobody else can. The database is already live; your job is the client and the thin server routes.
 
 ### 12.1 How a garden works
 
-- **Creating.** The device generates a garden key: 32 random bytes from `crypto.getRandomValues`, base64url-encoded. It calls `POST /api/garden`, sending the key in an `Authorization: Garden <key>` header. The server stores only the SHA-256 hash of the key as the garden id. The raw key is never stored or logged on the server.
+- **Creating.** The device generates a garden key: 32 random bytes from `crypto.getRandomValues`, base64url-encoded without padding (exactly 43 characters). It calls `POST /api/garden` with the key in an `Authorization: Garden <key>` header. The route calls `ag_create_garden(p_key, p_client)`, where `p_client` is a SHA-256 of the caller's IP salted with `CRON_SECRET` (never the raw IP). The database stores only the SHA-256 hash of the key; the raw key is never stored or logged.
 - **The secret link.** `https://<host>/join#k=<key>`. The key sits after the `#`, so it never reaches the server, Vercel logs or analytics. The QR code shows this link.
 - **Joining.** Scanning the QR or opening the link on another device saves the key locally, pulls everything, and opens Home.
-- **Rotating.** "Make a new link" generates a new key; the server re-keys the garden in one transaction. Old links stop working, and other devices see "This garden has a new link. Scan it to keep syncing."
+- **Rotating.** "Make a new link" generates a new key and calls `ag_rotate_garden(old, new)`. Old links stop working at once, and other devices see "This garden has a new link. Scan it to keep syncing."
+- **Deleting.** "Delete this garden" calls `ag_delete_garden(key)`, then clears the device.
 
 ### 12.2 Sync
 
 - Dexie is the source of truth on each device. Every change also goes into an outbox.
-- The `SyncEngine` calls `POST /api/sync` with `{ cursor, changes }` 2 s after edits settle, when the app regains focus, and when the network comes back. The server applies the changes and returns everything newer than the cursor, plus a new cursor.
-- **Conflicts:** last write wins per record, by `updated_at` (the server clamps timestamps from the future), ties broken by device id. Deletes travel as tombstones and are purged after 30 days, matching Trash.
+- The `SyncEngine` calls `POST /api/sync` with `{ cursor, changes }` 2 s after edits settle, when the app regains focus, and when the network comes back. The route calls `ag_sync(p_key, p_cursor, p_changes)`, which applies the changes and returns `{ cursor, more, changes }`: everything newer than the cursor, up to 2,000 rows a page. Keep calling while `more` is true.
+- **Record shape** both ways: `{ collection, id, data, updated_at, deleted_at }`. `collection` is lowercase snake_case (`tasks`, `aura_ledger` …); `id` is up to 200 characters; `updated_at` is an ISO timestamp.
+- **Conflicts:** last write wins per record by `updated_at`; the database clamps timestamps more than 5 minutes in the future, and on a tie it keeps its own copy. Deletes travel as tombstones (`deleted_at` set) and are purged after 30 days. If a device hasn't synced for 25 days or more, push its outbox, then replace its local data with a full pull from cursor 0. As a safety net, every device also does one full pull a day.
 - Aura ledger records use deterministic ids (section 7.4), so two devices can never double-award.
 - Fully usable offline; a cloud icon in the header shows Synced, Syncing, Offline or Needs attention.
 - With no Supabase env vars, `SyncEngine` is off, the link section in Settings says "Sync is off on this site", and everything else works.
 
-### 12.3 Schema
+### 12.3 The database (already live)
 
-Supabase Postgres, reached only by server routes using `SUPABASE_SECRET_KEY`. Row-level security is on for every table with **no policies**, so the publishable key can read nothing. Write this as `supabase/migrations/*.sql`, plus one combined `supabase/setup.sql` that David can paste into the SQL editor.
+Supabase project `auragarden` (ref `weebglxqeozejvwpazwt`, West EU, Ireland). `supabase/setup.sql` is the source of truth and is already applied, along with the two files in `supabase/migrations/`. Tables are locked: row-level security is on with no policies and no table grants, so the publishable key can only call these functions:
 
-```sql
-create table gardens (
-  id text primary key,                 -- sha256(garden key), hex
-  created_at timestamptz not null default now(),
-  last_seen_at timestamptz not null default now(),
-  bytes_used bigint not null default 0
-);
+| Function | Returns | Errors |
+| --- | --- | --- |
+| `ag_create_garden(p_key text, p_client text)` | `{ "created": bool }` (`false` if the key already exists) | `invalid_key`, `rate_limited` (20 per client and 500 in total a day) |
+| `ag_check_garden(p_key text)` | `bool`: does the garden exist | `invalid_key`, `rate_limited` (120 a minute) |
+| `ag_sync(p_key text, p_cursor bigint, p_changes jsonb)` | `{ "cursor", "more", "changes" }` | `invalid_key`, `garden_not_found`, `bad_request`, `payload_too_large` (2 MB), `too_many_changes` (1,000), `rate_limited` (120 a minute), `garden_full` (50 MB) |
+| `ag_rotate_garden(p_old_key text, p_new_key text)` | `true` | `invalid_key`, `garden_not_found` |
+| `ag_delete_garden(p_key text)` | `bool` | `invalid_key` |
+| `ag_heartbeat()` | `{ "ok", "purged" }`; keeps the project awake and purges old tombstones | |
 
-create sequence records_seq;
-create table records (
-  garden_id text not null references gardens(id) on delete cascade on update cascade,
-  collection text not null,            -- projects, sections, tasks, thoughts, contacts, catchups,
-                                       -- events, calendar_subscriptions, aura_ledger, garden_items,
-                                       -- achievements, settings
-  id text not null,
-  data jsonb not null,
-  updated_at timestamptz not null,
-  deleted_at timestamptz,
-  server_seq bigint not null default nextval('records_seq'),  -- set to nextval() again on every update
-  primary key (garden_id, collection, id)
-);
-create index records_pull on records (garden_id, server_seq);
-
-create table rate_limits (bucket text primary key, count int not null, window_start timestamptz not null);
-create table heartbeat (id int primary key, beat_at timestamptz not null);
-
-alter table gardens enable row level security;
-alter table records enable row level security;
-alter table rate_limits enable row level security;
-alter table heartbeat enable row level security;
-```
-
-**Limits:** 2 MB per sync request, 50 MB per garden, 20 new gardens per IP per day, 120 sync calls per garden per minute. Images are resized on the device (256 px WebP, 50 KB max) and stored inside records; there are no storage buckets.
+- Call them from server routes only, with `@supabase/supabase-js` (`createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY).rpc(...)`). Both env vars are server-only: never prefix them with `NEXT_PUBLIC_`.
+- Map errors to HTTP: `invalid_key` and `garden_not_found` → 401; `bad_request` and `too_many_changes` → 400; `payload_too_large` → 413; `rate_limited` → 429; `garden_full` → 507.
+- **Don't change the schema or these functions.** You have no database access from here. If something truly needs a change, write a new file in `supabase/migrations/` and flag it in `PROGRESS.md`; David will ask Claude in chat to apply it.
+- **Tests:** write an in-memory fake of these six functions that follows `setup.sql` exactly, and use it for unit and Playwright tests. Test against the real thing on https://auragarden.vercel.app after a push, if your environment can reach it.
+- Images are resized on the device (256 px WebP, 50 KB max) and stored inside records; there are no storage buckets.
 
 ### 12.4 Keeping her garden safe
 
@@ -678,11 +662,10 @@ There is no account recovery by design, so the app makes losing the link hard:
 
 ### 12.5 Privacy and abuse protection
 
-- The server keeps only key hashes. Never log `Authorization` headers or request bodies.
+- The database keeps only key hashes. Never log `Authorization` headers, keys or request bodies.
 - No analytics, trackers or third-party scripts.
-- `/api/calendar/feed` needs a valid garden key; allows only `http` and `https`; resolves DNS and refuses private, loopback and link-local addresses; times out at 10 s; caps responses at 5 MB; must parse as iCalendar; is rate-limited per garden; caches for 15 minutes.
-- "Delete this garden" wipes it on the server and on the device.
-- The repo is public: secrets live only in Vercel environment variables.
+- `/api/calendar/feed` first calls `ag_check_garden` with the caller's key; allows only `http` and `https`; resolves DNS and refuses private, loopback and link-local addresses; times out at 10 s; caps responses at 5 MB; must parse as iCalendar; caches for 15 minutes.
+- The repo is public: env values live only in Vercel.
 
 ---
 
@@ -697,9 +680,9 @@ Build in ten phases, each finished, verified and committed before the next begin
 5. **Achievements.** All families, project ranks, the belt icon, Oscar's wardrobe, the Trophy Room, and the economy simulation with `docs/ECONOMY.md`.
 6. **Thoughts, People, Calendar.** Sections 6.5 to 6.7, including the feed route and `.ics` and `.vcf` import.
 7. **Home and the unwrap.** Home widgets, the `/laura` unwrap with the signature, the welcome page at `/`, onboarding, and the return-visit version.
-8. **Sync and PWA.** Supabase migrations and `setup.sql`, `/api/garden`, `/api/sync`, `SyncEngine`, joining by QR or link, rotation, limits, the safety steps in 12.4. Web manifest, Oscar app icons, offline shell.
+8. **Sync and PWA.** The server routes (`/api/garden`, `/api/sync`, `/api/calendar/feed` key check, `/api/keepalive`) over the live `ag_*` functions, the in-memory fake for tests, `SyncEngine`, joining by QR or link, rotation, deleting, and the safety steps in 12.4. Web manifest, Oscar app icons, offline shell.
 9. **Polish.** Accessibility, performance, reduced motion, dark mode, every empty state, a copy read-through, and cross-device checks.
-10. **Ship.** Prepare the deploy (section 14), then hand over (section 15).
+10. **Ship.** Final push and checks (section 14), then hand over (section 15).
 
 **After every phase**
 
@@ -707,7 +690,7 @@ Build in ten phases, each finished, verified and committed before the next begin
 - Take Playwright screenshots at 390×844 and 1440×900, in light and dark. Look at them and critique like a senior product designer: spacing, alignment, hierarchy, contrast, delight. Fix and re-shoot until each screen is genuinely beautiful.
 - Commit with a clear message and push. Update `PROGRESS.md`.
 
-**When to stop and ask David:** anything that costs money; any domain or DNS change; the dashboard steps in section 14. Never stop for anything else: use placeholders and note them.
+**When to stop and ask David:** anything that costs money; any domain or DNS change; anything that needs the Vercel or Supabase dashboards (section 14). Never stop for anything else: use placeholders and note them.
 
 **Acceptance checks** (automate with Playwright where possible; use a local fixture feed with recurring events for calendar tests)
 
@@ -725,7 +708,7 @@ Build in ten phases, each finished, verified and committed before the next begin
 - [ ] A pasted iCal link shows its events, recurring ones included, in Week view; the feed route refuses `http://127.0.0.1` and `http://169.254.169.254`
 - [ ] An `.ics` upload imports events and a `.vcf` upload imports contacts
 - [ ] Two browser contexts joined to the same garden see each other's edits within 10 s; completing the same task on both awards it once
-- [ ] A wrong key gets 401, and no request ever returns another garden's records
+- [ ] A wrong key gets 401, and no request ever returns another garden's records (against the fake, and on the live site if reachable)
 - [ ] Ticking a task offline works and syncs when the connection returns
 - [ ] The app installs to an iPhone home screen and "Paste my garden link" restores the garden there
 - [ ] The economy simulation meets the pacing targets in section 10.5
@@ -734,30 +717,28 @@ Build in ten phases, each finished, verified and committed before the next begin
 
 ---
 
-## 14. Deploy to Vercel
+## 14. Deploy
 
-Vercel builds the site straight from this GitHub repo, and Supabase stores synced gardens. David does two short dashboard steps; everything else is in the code.
+Hosting and the database are already set up, so deploying is just pushing to `main`.
 
-**What Claude Code prepares**
+**What's already live**
 
-- All code pushed to `main` of `dhackettLMK/AuraGarden_`, with no secrets.
-- `supabase/setup.sql`: every table from section 12.3 in one paste.
-- `vercel.json` with the keep-alive cron: `{"crons":[{"path":"/api/keepalive","schedule":"17 6 * * *"}]}`. The route checks `Authorization: Bearer $CRON_SECRET` (Vercel sends it automatically when that variable is set) and writes one row to `heartbeat`. Supabase pauses free projects after about a week of too little database activity; a daily write prevents it, and a paused project keeps its data and resumes from the dashboard. Hobby crons run once a day, which is enough.
-- `DEPLOY.md`: the click-by-click steps below, written for a phone.
-- If `VERCEL_TOKEN` and `SUPABASE_ACCESS_TOKEN` exist in your environment, do steps 1–3 yourself with the CLIs instead, and confirm each one.
+| Piece | Details |
+| --- | --- |
+| Vercel project | `auragarden` in the Nexeire team, linked to `dhackettLMK/AuraGarden_`. Framework preset Next.js, functions in `dub1` (Dublin). Every push to `main` deploys to production; other branches get preview deployments |
+| Production URL | https://auragarden.vercel.app (Laura's gift: https://auragarden.vercel.app/laura) |
+| Environment variables | `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` (production, preview, development) and `CRON_SECRET` (production, preview). All server-only |
+| Supabase project | `auragarden`, West EU (Ireland), with `supabase/setup.sql` and both migrations applied and tested |
+| Ignored build step | Builds are skipped while the repo has no `package.json`, so this build pack doesn't trigger failed deploys. Leave it as it is |
 
-**What David does (about 10 minutes)**
+**What you do**
 
-1. **Supabase.** At supabase.com, create a free project called "auragarden" in West EU (Ireland). Open the SQL Editor, paste `supabase/setup.sql`, run it. Copy the Project URL and the secret key from the project's API keys settings.
-2. **Vercel.** At vercel.com, choose Add New, Project, and import `AuraGarden_`. Add the environment variables below, then Deploy. Every push to `main` redeploys automatically.
-3. **Test on his own phone** in a private tab first, so Laura's garden starts fresh: open `<vercel-url>/laura`, unwrap, start a garden, tick a task, open it on a laptop by QR. Vercel's instant rollback is there if anything breaks.
-4. **Optional domain.** In the Vercel project's Domains settings, add the domain and set the DNS records Vercel shows at the registrar.
+- Add `vercel.json` with the function region and the keep-alive cron: `{"regions":["dub1"],"crons":[{"path":"/api/keepalive","schedule":"17 6 * * *"}]}`. The route checks `Authorization: Bearer $CRON_SECRET` (Vercel sends it automatically) and calls `ag_heartbeat()`. Supabase pauses free projects after about a week of too little database activity; this daily call prevents it. Hobby crons run once a day, which is enough.
+- Add `.env.example` listing the three variable names with empty values, and nothing else.
+- Push each finished phase to `main`; the site redeploys itself. If you can reach the live site from your environment, smoke-test it after each phase.
+- Write `DEPLOY.md` explaining the setup above for future sessions.
 
-| Variable | Value | Exposed to browser |
-| --- | --- | --- |
-| `SUPABASE_URL` | Supabase Project URL | No |
-| `SUPABASE_SECRET_KEY` | Supabase secret key | No |
-| `CRON_SECRET` | Any random string, 32+ characters | No |
+**If something needs the dashboards** (a failed build to inspect, protection settings, a custom domain, a schema change), note it in `PROGRESS.md`. David will ask Claude in chat, where Vercel and Supabase are connected, to sort it. If `https://auragarden.vercel.app/laura` ever asks for a Vercel login, the project's Deployment Protection needs to be Standard Protection.
 
 The gift text (tag, signature, optional note) lives in `config/gifts.ts`, which is public in this repo and visible to anyone who opens `/laura`. Keep it to what you'd write on a card.
 
@@ -769,13 +750,14 @@ Finish with a short report to David and a printable card he can hand Laura with 
 
 **The report (in `HANDOVER.md`, and summarised in chat)**
 
-- The live URL for `/laura`, and the custom domain if set.
+- The live link: https://auragarden.vercel.app/laura, and the custom domain if one was added.
+- How David should test without spoiling it: in a private tab on his own phone, open `/laura`, unwrap, start a garden, tick a task, open it on a laptop by QR. Laura's phone will still get a fresh unwrap and a fresh garden.
 - How Laura starts: open `/laura` on her phone, unwrap, "Start my garden", save her secret link, add to home screen. David never needs her link.
 - How to open her garden on a laptop: Settings, Open on another device, scan the QR.
 - How she links her Google, Apple or Outlook calendar.
 - What's still a placeholder, and anything David still has to do.
 - Where to tweak things: `config/gifts.ts`, `config/realms.ts`, `config/achievements.ts`, `config/oscar-lines.ts`, and `docs/ECONOMY.md`.
 - Next sessions, most valuable first: realm art packs 4–10 (`REALMS_TODO.md`); push reminders for the installed app; two-way Google Calendar sync; a rewards shelf where she sets her own real-life treats at aura milestones.
-- A `README.md` covering local dev, env vars, the Supabase setup and deploys.
+- A `README.md` covering local dev, env vars, the database and deploys.
 
-**The gift card.** Generate `gift/auragarden-card.pdf` and a matching PNG: an A6 card at 300 dpi with 3 mm bleed. Front: Oscar peeking out of the gift box, the AuraGarden wordmark, "For Laura". Back: a QR code to `<site>/laura`, "For Laura, grow something great." in Caveat, "David" in the signature script with a small heart, and "Scan to unwrap".
+**The gift card.** Generate `gift/auragarden-card.pdf` and a matching PNG: an A6 card at 300 dpi with 3 mm bleed. Front: Oscar peeking out of the gift box, the AuraGarden wordmark, "For Laura". Back: a QR code to https://auragarden.vercel.app/laura, "For Laura, grow something great." in Caveat, "David" in the signature script with a small heart, and "Scan to unwrap".
