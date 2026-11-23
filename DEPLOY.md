@@ -39,7 +39,7 @@ The build lives on the branch `claude/wizardly-gates-wo8a0v`.
    | `SUPABASE_SECRET_KEY` | the secret key from step 1 |
    | `CRON_SECRET` | any long random string, 32+ characters (mash the keyboard, or use a password generator) |
 
-5. Tap **Deploy**. In a couple of minutes you get a link like `https://aura-garden.vercel.app`. From now on every push to `main` redeploys automatically.
+5. Tap **Deploy**. In a couple of minutes you get a link like `https://auragarden-nexeire.vercel.app`. From now on every push to `main` redeploys automatically.
 
 The daily keep-alive is already set up in `vercel.json` (`/api/keepalive` at 06:17 UTC). It writes one row so Supabase never pauses the free project for inactivity. If a project ever does pause, its data is kept: open it in Supabase and tap **Restore**.
 
@@ -63,7 +63,7 @@ Vercel → your project → **Settings** → **Domains** → **Add**. Vercel sho
 
 ## 5. Print the gift card with the real link
 
-The card's QR code currently points at `https://aura-garden.vercel.app/laura`. Once you know your real URL, ask Claude Code (or run it yourself):
+The card's QR code points at `https://auragarden-nexeire.vercel.app/laura` (the Vercel project's production address). If you add a custom domain, ask Claude Code (or run it yourself):
 
 ```
 npm run build && npx next start -p 3100 &

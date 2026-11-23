@@ -96,7 +96,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 
 ## Placeholders
 
-- **Gift card QR** points at `https://aura-garden.vercel.app/laura` until the real URL is known; re-run `SITE_URL=… npx tsx scripts/make-gift-card.tsx`.
+- **Gift card QR** points at `https://auragarden-nexeire.vercel.app/laura`, the Vercel project's production address. If a custom domain is added, re-run `SITE_URL=… npx tsx scripts/make-gift-card.tsx`.
+- **Vercel env vars (checked):** `SUPABASE_URL` and `CRON_SECRET` are set, but `SUPABASE_SECRET_KEY` is missing (a `SUPABASE_PUBLISHABLE_KEY` is set instead, which the app doesn't use). Until it's added, sync stays off. The site has had preview builds only; production builds once the branch is merged into `main`.
 - **Gift note** is unset (`config/gifts.ts`).
 
 - **Swap 'N' Serve Cup logo.** David pasted a cleaner (non-distressed) version of the Cup logo in chat on 23 Nov. Pasted images can't be saved from chat, so the app uses the existing `assets/logos/swapnserve-cup-logo.png`. To swap it in, upload the new PNG over that path (same name). The build copies it to `public/brand/` and every screen picks it up.

@@ -16,7 +16,7 @@ import QRCode from "qrcode";
 import { Oscar } from "../components/oscar/Oscar";
 import { GIFTS } from "../config/gifts";
 
-const SITE = (process.env.SITE_URL ?? "https://aura-garden.vercel.app").replace(/\/$/, "");
+const SITE = (process.env.SITE_URL ?? "https://auragarden-nexeire.vercel.app").replace(/\/$/, "");
 const BASE = process.env.BASE ?? "http://localhost:3100";
 const gift = GIFTS.laura;
 // A6 is 105 × 148 mm; with 3 mm bleed each side, 111 × 154 mm. At 300 dpi: 1311 × 1819 px.
