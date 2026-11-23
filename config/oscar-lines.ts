@@ -213,11 +213,12 @@ const last = new Map<LineCategory, string>();
 export function pickLine(category: LineCategory, vars: { name?: string; amount?: string } = {}) {
   const options = OSCAR_LINES[category];
   const pool = options.length > 1 ? options.filter((l) => l !== last.get(category)) : options;
-  let line = pool[Math.floor(Math.random() * pool.length)];
+  const template = pool[Math.floor(Math.random() * pool.length)];
+  last.set(category, template);
+  let line = template;
   // Using her name sometimes, never every line: drop it half the time when optional.
   const name = vars.name ?? "";
   if (!name) line = line.replace(/,? \{name\}/g, "").replace(/\{name\}\.? ?/g, "").replace(/\{NAME\}\.? ?/g, "");
-  last.set(category, line);
   return line
     .replace(/\{name\}/g, name)
     .replace(/\{NAME\}/g, name.toUpperCase())
