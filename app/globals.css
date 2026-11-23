@@ -27,6 +27,10 @@
   --aura-2: #f59fc6;
   --aura-3: #ffd36e;
   --aura-glow: rgba(245, 159, 198, 0.35);
+  /* Deeper aura stops for text on light backgrounds (AA contrast). */
+  --aura-ink-1: #7656cc;
+  --aura-ink-2: #c04b86;
+  --aura-ink-3: #a8700a;
   --shadow-tint: rgba(79, 122, 90, 0.12);
   --shadow-tint-strong: rgba(79, 122, 90, 0.2);
   --accent: var(--primary);
@@ -53,6 +57,9 @@
   --gentle-ink: #f6e3b8;
   --danger: #f08a82;
   --aura-glow: rgba(245, 159, 198, 0.5);
+  --aura-ink-1: #c9b3ff;
+  --aura-ink-2: #ffb3d6;
+  --aura-ink-3: #ffd98a;
   --shadow-tint: rgba(0, 0, 0, 0.35);
   --shadow-tint-strong: rgba(0, 0, 0, 0.5);
   --grain-opacity: 0.05;
@@ -171,7 +178,7 @@
 }
 
 @utility aura-text {
-  background: linear-gradient(100deg, var(--aura-1), var(--aura-2) 50%, var(--aura-3));
+  background: linear-gradient(100deg, var(--aura-ink-1), var(--aura-ink-2) 50%, var(--aura-ink-3));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -417,4 +424,17 @@ html.reduce-motion *::after {
 }
 .popover[data-state="open"] {
   animation: fade-in 140ms ease-out;
+}
+
+/* Soft hand-drawn strikethrough for done tasks (brief 7.5). */
+.hand-strike {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='8' viewBox='0 0 120 8' preserveAspectRatio='none'><path d='M1 5.2C14 3.6 26 6 40 4.4S66 2.8 80 4.6 104 5.6 119 3.4' stroke='%237BA978' stroke-width='1.8' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  background-size: 0% 0.5em;
+  transition: background-size 380ms cubic-bezier(0.16, 1, 0.3, 1), color 300ms ease;
+}
+.hand-strike[data-done="true"] {
+  background-size: 100% 0.5em;
+  color: var(--ink-muted);
 }

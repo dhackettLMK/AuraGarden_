@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useMemo } from "react";
-import { useLedger } from "@/lib/hooks";
+import { useLedger, useNow } from "@/lib/hooks";
 import { levelProgress, titleFor } from "@/config/levels";
 
 export interface GameState {
@@ -13,26 +13,33 @@ export interface GameState {
   toNextLevel: number;
   streak: number;
   projectAura: Record<string, number>;
+  projectAuraWeek: Record<string, number>;
 }
 
-const empty: GameState = { ready: false, total: 0, level: 1, title: "Seedling", levelProgress: 0, toNextLevel: 50, streak: 0, projectAura: {} };
+const empty: GameState = { ready: false, total: 0, level: 1, title: "Seedling", levelProgress: 0, toNextLevel: 50, streak: 0, projectAura: {}, projectAuraWeek: {} };
 const Ctx = createContext<GameState>(empty);
 
 /** One place that derives game state from the ledger, shared by every screen. */
 export function GameProvider({ children }: { children: React.ReactNode }) {
   const ledger = useLedger();
+  const now = useNow(5 * 60_000);
   const value = useMemo<GameState>(() => {
     if (!ledger) return empty;
     let total = 0;
     const projectAura: Record<string, number> = {};
+    const projectAuraWeek: Record<string, number> = {};
+    const weekAgo = now - 7 * 86_400_000;
     for (const r of ledger) {
       if (r.voided || r.deletedAt) continue;
       total += r.amount;
-      if (r.projectId) projectAura[r.projectId] = (projectAura[r.projectId] ?? 0) + r.amount;
+      if (r.projectId) {
+        projectAura[r.projectId] = (projectAura[r.projectId] ?? 0) + r.amount;
+        if (r.at >= weekAgo) projectAuraWeek[r.projectId] = (projectAuraWeek[r.projectId] ?? 0) + r.amount;
+      }
     }
     const lp = levelProgress(total);
-    return { ready: true, total, level: lp.level, title: titleFor(lp.level), levelProgress: lp.progress, toNextLevel: lp.toGo, streak: 0, projectAura };
-  }, [ledger]);
+    return { ready: true, total, level: lp.level, title: titleFor(lp.level), levelProgress: lp.progress, toNextLevel: lp.toGo, streak: 0, projectAura, projectAuraWeek };
+  }, [ledger, now]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

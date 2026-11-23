@@ -14,6 +14,10 @@ import { ThemeSync } from "./ThemeSync";
 import { Welcome } from "@/features/welcome/Welcome";
 import { ShellSkeleton } from "./ShellSkeleton";
 import { PageTransition } from "./PageTransition";
+import { Shortcuts } from "./Shortcuts";
+import { QuickAdd } from "@/features/quickadd/QuickAdd";
+import { TaskSheet } from "@/features/tasks/TaskSheet";
+import { TaskPickerSheet } from "@/features/tasks/TaskPickerSheet";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const status = useGardenStatus();
@@ -43,6 +47,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <TabBar />
         </div>
         <MoreSheet />
+        <QuickAdd />
+        <TaskSheet />
+        <TaskPickerSheet />
+        <Shortcuts />
         <Toaster />
       </GameProvider>
     </MotionConfig>

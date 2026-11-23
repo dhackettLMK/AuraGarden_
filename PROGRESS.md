@@ -7,8 +7,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | # | Phase | Status |
 | --- | --- | --- |
 | 1 | Foundations | ✅ Done |
-| 2 | Core editing | ⏳ Next |
-| 3 | Aura and Oscar | ⬜ |
+| 2 | Core editing | ✅ Done |
+| 3 | Aura and Oscar | ⏳ Next |
 | 4 | The garden world | ⬜ |
 | 5 | Achievements | ⬜ |
 | 6 | Thoughts, People, Calendar | ⬜ |
@@ -40,9 +40,16 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Purge (delete forever)** sends a tombstone with `purged: true` so other devices delete it too.
 - **Screenshots:** `scripts/screenshots.ts` (server on :3100) seeds a garden through `window.__ag.seedDemo` (a local-only helper) and shoots 390×844 and 1440×900 in light and dark into `screenshots/` (git-ignored).
 
+- **Phase 2 editing model.** Tap a title to edit it in place; the chevron (or tapping the meta line) opens the full task sheet. Long-press (touch) or right-click opens the context menu (Radix ContextMenu supports long-press natively). Reordering uses a small grip handle (dnd-kit; touch drag after 180 ms hold, keyboard with Space + arrows), so it never fights the swipe-to-complete gesture.
+- **Swipe** (touch only): right past 90 px completes; left reveals Schedule / Move / Delete.
+- **Just-completed rows** are held in place for 1 s (`features/tasks/hold-store.ts`) before gliding into Done.
+- **Empty-project suggestion chips** open quick add for that project rather than creating pre-filled tasks (brief: "never pre-filled data").
+- **Bulk select** lives on /tasks (move, reschedule, tag, delete).
+- **Trash** is a sheet (`features/settings/TrashSheet.tsx`) opened from Settings (wired in phase 7/9 Settings build).
+
 ## Placeholders
 
-- (none yet)
+- **Swap 'N' Serve Cup logo.** David pasted a cleaner (non-distressed) version of the Cup logo in chat on 23 Nov. Pasted images can't be saved from chat, so the app uses the existing `assets/logos/swapnserve-cup-logo.png`. To swap it in, upload the new PNG over that path (same name). The build copies it to `public/brand/` and every screen picks it up.
 
 ## Open questions for David
 

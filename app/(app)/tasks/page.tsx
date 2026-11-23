@@ -1,7 +1,7 @@
-import { ComingSoon } from "@/features/ComingSoon";
+import { TasksView } from "@/features/tasks/TasksView";
 
 export const metadata = { title: "Tasks" };
 
 export default function Page() {
-  return <ComingSoon name="Tasks" />;
+  return <TasksView />;
 }
