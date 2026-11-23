@@ -5,7 +5,7 @@ It's already set up and live. This page says what's where and how to look after 
 ## What's live
 
 - **Code:** `main` on github.com/dhackettLMK/AuraGarden_. Every push to `main` deploys automatically.
-- **Website:** Vercel project `auragarden` (team Nexeire), at **https://auragarden-nexeire.vercel.app**. Laura's gift is `/laura`.
+- **Website:** Vercel project `auragarden` (team Nexeire), at **https://auragarden.vercel.app**. Laura's gift is `/laura`.
 - **Database:** Supabase project `auragarden` (West EU, Ireland), set up from `supabase/setup.sql` and `supabase/migrations/`. Don't change it by hand: the app only calls its `ag_*` functions.
 - **Environment variables** (Vercel → Settings → Environment Variables): `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` and `CRON_SECRET`.
 
@@ -17,7 +17,7 @@ The functions are pinned to Dublin (`dub1`). If Vercel ever complains about the 
 
 Use a **private/incognito tab** so Laura's garden starts completely fresh on her own phone later.
 
-1. Open `https://auragarden-nexeire.vercel.app/laura`. Tap the box, watch it unwrap, tap **Start my garden**.
+1. Open `https://auragarden.vercel.app/laura`. Tap the box, watch it unwrap, tap **Start my garden**.
 2. Go through the welcome cards and tick the first task. You should hear the ding and see **+25**.
 3. On Settings → **My garden link**, the cloud icon at the top should say **Synced**.
 4. On a laptop, open Settings → **Open on another device** on the phone and scan the QR code with the laptop's browser (or copy the link across). Tick something on one device and watch it appear on the other within a few seconds.
@@ -31,7 +31,7 @@ Vercel → your project → **Settings** → **Domains** → **Add**. Vercel sho
 
 ## 3. Print the gift card with the real link
 
-The card's QR code points at `https://auragarden-nexeire.vercel.app/laura` (the Vercel project's production address). If you add a custom domain, ask Claude Code (or run it yourself):
+The card's QR code points at `https://auragarden.vercel.app/laura`. If you add a custom domain, ask Claude Code (or run it yourself):
 
 ```
 npm run build && npx next start -p 3100 &

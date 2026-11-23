@@ -96,7 +96,7 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 
 ## Placeholders
 
-- **Gift card QR** points at `https://auragarden-nexeire.vercel.app/laura`, the Vercel project's production address. If a custom domain is added, re-run `SITE_URL=… npx tsx scripts/make-gift-card.tsx`.
+- **Gift card QR** points at `https://auragarden.vercel.app/laura`, the Vercel project's production address. If a custom domain is added, re-run `SITE_URL=… npx tsx scripts/make-gift-card.tsx`.
 - **Vercel env vars (checked):** `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` and `CRON_SECRET` are set, which is everything the app needs. `CRON_SECRET` is stored as a readable variable; re-adding it as Sensitive is tidier.
 - **Gift note** is unset (`config/gifts.ts`).
 

@@ -6,7 +6,7 @@ Hi David. AuraGarden is built, tested and ready to deploy. Here's everything you
 
 Live. Every push to `main` deploys automatically. Laura's link is:
 
-**`https://auragarden-nexeire.vercel.app/laura`**
+**`https://auragarden.vercel.app/laura`**
 
 and the custom domain too, if you add one. The code is on the branch `claude/wizardly-gates-wo8a0v`; `DEPLOY.md` step 0 merges it into `main`.
 
@@ -38,7 +38,7 @@ She pastes the link and her events appear (repeating ones included), refreshed e
 **You:**
 
 - **Test it yourself first** in a private tab (`DEPLOY.md` step 1), then delete your test garden from Settings.
-- **Print the gift card.** `gift/auragarden-card.pdf` and `.png` (A6, 3 mm bleed) have the QR pointing at `https://auragarden-nexeire.vercel.app/laura`. If you add a custom domain, re-run `SITE_URL=<url> npx tsx scripts/make-gift-card.tsx` (or ask Claude Code to).
+- **Print the gift card.** `gift/auragarden-card.pdf` and `.png` (A6, 3 mm bleed) have the QR pointing at `https://auragarden.vercel.app/laura`. If you add a custom domain, re-run `SITE_URL=<url> npx tsx scripts/make-gift-card.tsx` (or ask Claude Code to).
 - **Swap in the cleaner Swap 'N' Serve Cup logo** you pasted in chat: upload it over `assets/logos/swapnserve-cup-logo.png` (same name). Pasted images can't be saved from chat, so the app currently uses the distressed version already in the repo.
 - **Check the calendar how-tos once** on a real account. The brief asked me to verify them against Google, Apple and Microsoft's help pages, but those sites aren't reachable from the build environment, so they're written carefully from knowledge.
 

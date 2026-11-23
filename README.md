@@ -50,7 +50,7 @@ To run the sync end-to-end tests locally, start any Postgres, create the roles `
 
 ## Deploys
 
-Vercel project `auragarden` builds from `main` on every push (production: https://auragarden-nexeire.vercel.app). Functions run in Dublin (`dub1`), and `vercel.json` schedules the daily keep-alive. See `DEPLOY.md` for the click-by-click setup.
+Vercel project `auragarden` builds from `main` on every push (production: https://auragarden.vercel.app). Functions run in Dublin (`dub1`), and `vercel.json` schedules the daily keep-alive. See `DEPLOY.md` for the click-by-click setup.
 
 ## How it's built
 
