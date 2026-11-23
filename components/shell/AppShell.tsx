@@ -16,6 +16,7 @@ import { ShellSkeleton } from "./ShellSkeleton";
 import { PageTransition } from "./PageTransition";
 import { Shortcuts } from "./Shortcuts";
 import { Onboarding } from "@/features/onboarding/Onboarding";
+import { SyncRuntime } from "./SyncRuntime";
 import { QuickAdd } from "@/features/quickadd/QuickAdd";
 import { CelebrationLayer } from "@/components/celebrate/CelebrationLayer";
 import { GameRuntime } from "@/components/celebrate/GameRuntime";
@@ -43,6 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <GameProvider>
         <ThemeSync />
         <GameRuntime />
+        <SyncRuntime />
         <div className={`paper-grain relative flex min-h-dvh ${fromUnwrap ? "from-unwrap" : ""}`}>
           <Sidebar />
           <div className="relative z-[1] flex min-w-0 flex-1 flex-col">
