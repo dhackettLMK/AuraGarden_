@@ -145,6 +145,35 @@ export function MeadowScene({ unlocked, timeOfDay, className }: RealmSceneProps)
           ))}
         </g>
       )}
+      {has("clover") &&
+        Array.from({ length: 14 }).map((_, i) => (
+          <g key={`cl${i}`} transform={`translate(${900 + ((i * 47) % 260)} ${900 + ((i * 29) % 70)})`}>
+            {[0, 120, 240].map((r) => (
+              <circle key={r} cx="0" cy="-5" r="5" fill="#6FA864" transform={`rotate(${r})`} />
+            ))}
+          </g>
+        ))}
+      {has("daisy-chain") && (
+        <path d="M680 930c40 20 120 20 160 0" stroke="#7DB46E" strokeWidth="2" fill="none" />
+      )}
+      {has("daisy-chain") &&
+        Array.from({ length: 7 }).map((_, i) => <Daisy key={`dc${i}`} x={690 + i * 24} y={938 + Math.sin(i / 1.1) * 6} s={0.55} />)}
+      {has("bunting") && (
+        <g>
+          <path d="M420 470c120 40 280 40 400 0" stroke="#4A3F35" strokeWidth="1.6" fill="none" />
+          {Array.from({ length: 10 }).map((_, i) => {
+            const x = 440 + i * 38;
+            const y = 470 + Math.sin((i / 9) * Math.PI) * 30;
+            return <path key={i} d={`M${x} ${y}l16 0-8 18z`} fill={["#F2A3B5", "#F4C443", "#9CC9FF", "#B9DE9E"][i % 4]} />;
+          })}
+        </g>
+      )}
+      {has("skylark") && (
+        <g className="drift-b" transform="translate(700 240)">
+          <path d="M0 0c-14-10-26-8-32 0 10-2 20 0 32 0zM0 0c14-10 26-8 32 0-10-2-20 0-32 0z" fill="#8A6A4E" />
+          <ellipse cx="0" cy="2" rx="6" ry="4" fill="#A8866A" />
+        </g>
+      )}
       {has("wildflowers") && (
         <g transform="translate(900 600)" className="drift-a">
           <Butterfly color="#F7D265" s={1.3} />
@@ -266,6 +295,39 @@ export function LakeScene({ unlocked, timeOfDay, className }: RealmSceneProps) {
           <circle cx="-60" cy="-90" r="10" fill="#FFD36E" opacity=".9" />
         </g>
       )}
+      {has("ducks") &&
+        [[700, 860], [730, 875], [752, 884]].map(([x, y], i) => (
+          <g key={`dk${i}`} transform={`translate(${x} ${y}) scale(${i ? 0.55 : 0.9})`} className="bob">
+            <ellipse cx="0" cy="0" rx="18" ry="10" fill="#E9D9B6" />
+            <circle cx="14" cy="-10" r="8" fill={i ? "#E9D9B6" : "#3F7A4D"} />
+            <path d="M20-10l8 2-8 3z" fill="#E3A04A" />
+          </g>
+        ))}
+      {has("stepping-logs") &&
+        [[300, 900], [350, 910], [400, 905]].map(([x, y], i) => (
+          <g key={`lg${i}`}>
+            <ellipse cx={x} cy={y} rx="22" ry="9" fill="#A87B52" />
+            <ellipse cx={x} cy={y - 3} rx="17" ry="6" fill="#C99A6B" />
+          </g>
+        ))}
+      {has("pear-tree") && (
+        <g transform="translate(1530 600) scale(0.55)">
+          <path d="M-8 0v-110h16V0z" fill="#8A6242" />
+          <g transform="translate(0 -150)">
+            <Canopy r={70} colors={["#8BBF6E", "#6FA864", "#C9E6A8"]} />
+            {[[-30, 0], [20, -20], [30, 20]].map(([ax, ay], k) => (
+              <path key={k} d={`M${ax} ${ay - 10}c6 0 8 8 8 14 0 6-4 8-8 8s-8-2-8-8c0-6 2-14 8-14z`} fill="#D6D46A" />
+            ))}
+          </g>
+        </g>
+      )}
+      {has("lanterns-lake") &&
+        [[520, 760], [880, 720], [1060, 820], [640, 880]].map(([x, y], i) => (
+          <g key={`fl${i}`} className="bob" style={{ animationDelay: `${i * 0.4}s` }}>
+            {night && <circle cx={x} cy={y - 10} r="22" fill="#FFD36E" opacity=".35" />}
+            <path d={`M${x - 8} ${y}h16l-3-18h-10z`} fill={night ? "#FFE7A3" : "#F6E7C1"} />
+          </g>
+        ))}
       <g transform="translate(180 900) scale(0.7)">
         <CherryTree season="spring" />
       </g>

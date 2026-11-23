@@ -88,42 +88,82 @@ const REALM_ITEMS: Record<string, [string, string, string?][]> = {
   meadow: [
     ["poppies", "A poppy field"], ["beehives", "Beehives"], ["picnic", "A picnic blanket"], ["hares", "Hares"],
     ["windmill", "A windmill"], ["kite", "A kite"], ["meadow-cottage", "Oscar's meadow cottage", "home"], ["wildflowers", "Wildflowers everywhere"],
+    ["clover", "A clover patch"],
+    ["daisy-chain", "A daisy chain"],
+    ["bunting", "Meadow bunting"],
+    ["skylark", "A skylark"],
   ],
   lake: [
     ["jetty", "A rowing boat and jetty"], ["swans", "Swans"], ["orchard", "Orchard rows"], ["willow", "A weeping willow"],
     ["lilies", "Water lilies"], ["fireworks", "Fireworks over the water"], ["lake-house", "Oscar's lake house", "home"], ["sunset-dock", "A sunset dock"],
+    ["ducks", "A family of ducks"],
+    ["stepping-logs", "Stepping logs"],
+    ["pear-tree", "A pear tree"],
+    ["lanterns-lake", "Floating lanterns"],
   ],
   woodland: [
     ["fairy-ring", "A fairy ring of mushrooms"], ["foxes", "A fox family"], ["deer", "Deer"], ["owl", "An owl"],
     ["rope-bridge", "A rope bridge"], ["toadstools", "Glowing toadstools"], ["treehouse", "Oscar's treehouse", "home"], ["fireflies", "A firefly glade"],
+    ["ferns", "A fern hollow"],
+    ["hedgehog", "A hedgehog"],
+    ["acorn-swing", "An acorn swing"],
+    ["mossy-log", "A mossy log"],
   ],
   cove: [
     ["lighthouse", "A lighthouse"], ["beach-hut", "A beach hut"], ["rock-pools", "Rock pools"], ["dolphins", "Dolphins"],
     ["sandcastle", "A sandcastle"], ["surfboard", "A surfboard for Oscar"], ["seaside-villa", "Oscar's seaside villa", "home"], ["shells", "A shell garden"],
+    ["crabs", "Two crabs"],
+    ["kite-beach", "A beach kite"],
+    ["tide-pool", "A tide pool"],
+    ["seals", "Seals"],
   ],
   mountains: [
     ["waterfall", "A waterfall"], ["cable-car", "A cable car"], ["hot-springs", "Hot springs"], ["eagles", "Eagles"],
     ["observatory", "An observatory"], ["lodge", "Oscar's mountain lodge", "home"], ["edelweiss", "Edelweiss meadows"], ["summit", "A summit flag"],
+    ["goats", "Mountain goats"],
+    ["prayer-flags", "Bright flags"],
+    ["pine-grove", "A pine grove"],
+    ["telescope", "A telescope"],
   ],
   sky: [
     ["islands", "Floating islands"], ["airship", "An airship"], ["cloud-bridges", "Cloud bridges"], ["sky-whales", "Gentle sky whales"],
     ["rainbow-falls", "Rainbow falls"], ["sky-castle", "Oscar's sky castle", "home"], ["cloud-garden", "A cloud garden"], ["kites", "Sky kites"],
+    ["cloud-sheep", "Cloud sheep"],
+    ["sky-lanterns", "Sky lanterns"],
+    ["bubble-garden", "A bubble garden"],
+    ["sky-ferry", "A sky ferry"],
   ],
   starlight: [
     ["moon-garden", "A moon garden"], ["constellations", "Constellations of your projects"], ["comet", "A comet"], ["planet-swing", "A planet swing"],
     ["star-tree", "A star-lantern tree"], ["moon-house", "Oscar's moon cottage", "home"], ["nebula", "A nebula pond"], ["shooting-stars", "Shooting stars"],
+    ["star-pond", "A star pond"],
+    ["moon-moths", "Moon moths"],
+    ["galaxy-path", "A galaxy path"],
+    ["orbit-swing", "An orbit swing"],
   ],
   aurora: [
     ["northern-lights", "Northern lights that dance to your streak"], ["ice-garden", "Ice-crystal gardens"], ["snow-owls", "Snowy owls"], ["ice-bridge", "An ice bridge"],
     ["crystal-trees", "Crystal trees"], ["aurora-palace", "The aurora palace", "home"], ["crystal-throne", "A crystal throne for Oscar"], ["polar-lights", "Polar lanterns"],
+    ["snow-hares", "Snow hares"],
+    ["ice-lanterns", "Ice lanterns"],
+    ["frost-roses", "Frost roses"],
+    ["aurora-bridge", "An aurora bridge"],
   ],
   infinite: [
     ["gold-garden", "Everything in gold"], ["eternal-bloom", "A garden that blooms forever"], ["gold-fountain", "A golden fountain"], ["gold-trees", "Golden trees"],
     ["halo", "A halo of light"], ["golden-palace", "Oscar's golden palace", "home"], ["oscar-crown", "Oscar's crown"], ["infinite-path", "A path that never ends"],
+    ["gold-butterflies", "Golden butterflies"],
+    ["gold-pond", "A golden pond"],
+    ["gold-bench", "A golden bench"],
+    ["gold-lights", "Golden lights"],
   ],
 };
 
-/** Geometric spacing between a realm's entry and the next realm's entry. */
+/**
+ * Geometric spacing between a realm's entry and the next realm's entry.
+ * Each realm has its signature unlocks plus a few small decor pieces, tuned
+ * so something new still arrives every couple of weeks in later years.
+ */
 function realmLadder(realm: Realm, nextAt: number): Unlock[] {
   const items = REALM_ITEMS[realm.id] ?? [];
   const n = items.length;
