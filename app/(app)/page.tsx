@@ -1,7 +1,5 @@
-import { ComingSoon } from "@/features/ComingSoon";
-
-export const metadata = { title: "Home" };
+import { HomeView } from "@/features/home/HomeView";
 
 export default function Page() {
-  return <ComingSoon name="Home" />;
+  return <HomeView />;
 }

@@ -12,8 +12,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | 4 | The garden world | ✅ Done |
 | 5 | Achievements | ✅ Done |
 | 6 | Thoughts, People, Calendar | ✅ Done |
-| 7 | Home and the unwrap | ⏳ Next |
-| 8 | Sync and PWA | ⬜ |
+| 7 | Home and the unwrap | ✅ Done |
+| 8 | Sync and PWA | ⏳ Next |
 | 9 | Polish | ⬜ |
 | 10 | Ship | ⬜ |
 
@@ -70,6 +70,11 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Calendar views:** Month, Week (desktop default), 3 days (phone default), Day, Agenda. Drag own events and time blocks to move (snaps to 15 min, across days) or resize from the bottom edge; feed events are read-only; due tasks are all-day chips you can tick; unscheduled tasks tray (drag onto a time on desktop, tap-then-tap on phones). Pull down to refresh feeds on phones.
 - **Thought aura** is awarded once a new thought has at least a few characters of text (first 3 a day).
 - **People one-tap actions:** call, text, WhatsApp (`wa.me`, Irish 08x numbers become 353…), email, Instagram, LinkedIn. Lucide no longer ships brand icons, so these use neutral icons.
+
+- **Unwrap** (`features/unwrap/`): built from SVG and CSS 3D (Motion). `/laura?replay=1` replays the full version (Settings → Replay the unwrap); `/laura?skip=1` renders nothing (used by tests to load the dev hook). The tag line is Caveat, "David" writes itself with a clip-path reveal over 900 ms, then the heart draws and beats once. Reduced motion shows still frames with the signature already written.
+- **Onboarding** runs once per garden created on this device (blank gardens too): Aura → Garden → Projects → first task (tick it) → save secret link → add to Home Screen; then `navigator.storage.persist()`. Joined gardens inherit `onboardedAt` from sync.
+- **Home**: widgets can be hidden, shown and reordered (Edit Home). At ≥1280 px the agenda and garden window move to a right rail. Oscar (72 px) sits bottom-right; tap for a line.
+- **Settings** is complete apart from server-side link rotation and delete, which arrive with sync in phase 8.
 
 ## Placeholders
 

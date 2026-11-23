@@ -118,7 +118,7 @@ function SortableCard({ project, tasks, index }: { project: Project; tasks: Task
   );
 }
 
-export function ProjectCard({ project, tasks, index = 0, dragging }: { project: Project; tasks: Task[]; index?: number; dragging?: boolean }) {
+export function ProjectCard({ project, tasks, index = 0, dragging, banner = true }: { project: Project; tasks: Task[]; index?: number; dragging?: boolean; banner?: boolean }) {
   const game = useGame();
   const aura = game.projectAura[project.id] ?? 0;
   const week = game.projectAuraWeek[project.id] ?? 0;
@@ -135,11 +135,11 @@ export function ProjectCard({ project, tasks, index = 0, dragging }: { project: 
         className={`group relative block overflow-hidden rounded-[20px] bg-surface p-4 shadow-[var(--shadow-soft)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)] ${dragging ? "scale-[1.02] shadow-[var(--shadow-lift)]" : ""}`}
       >
         <span className="absolute inset-x-0 top-0 h-1.5" style={{ background: project.color }} aria-hidden="true" />
-        {isSwap && <SwapNServeBanner className="-mx-1 mb-3 mt-1 h-[72px] !p-2.5" />}
+        {isSwap && banner && <SwapNServeBanner className="-mx-1 mb-3 mt-1 h-[72px] !p-2.5" />}
         <div className="flex items-start gap-3">
           <ProjectIcon project={project} size={52} belt={belt} />
           <div className="min-w-0 flex-1 pt-0.5">
-            <h2 className="truncate font-display text-[19px] font-semibold leading-tight">{project.name}</h2>
+            <h2 className="line-clamp-2 font-display text-[19px] font-semibold leading-tight">{project.name}</h2>
             <div className="mt-1.5">
               <RankBadge project={project} aura={aura} />
             </div>

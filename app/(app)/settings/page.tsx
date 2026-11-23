@@ -1,7 +1,7 @@
-import { ComingSoon } from "@/features/ComingSoon";
+import { SettingsView } from "@/features/settings/SettingsView";
 
 export const metadata = { title: "Settings" };
 
 export default function Page() {
-  return <ComingSoon name="Settings" />;
+  return <SettingsView />;
 }

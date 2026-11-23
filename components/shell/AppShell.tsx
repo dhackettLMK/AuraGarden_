@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MotionConfig } from "motion/react";
 import { useGardenStatus, useSettings } from "@/lib/hooks";
 import { GameProvider } from "@/lib/game/GameProvider";
@@ -15,6 +15,7 @@ import { Welcome } from "@/features/welcome/Welcome";
 import { ShellSkeleton } from "./ShellSkeleton";
 import { PageTransition } from "./PageTransition";
 import { Shortcuts } from "./Shortcuts";
+import { Onboarding } from "@/features/onboarding/Onboarding";
 import { QuickAdd } from "@/features/quickadd/QuickAdd";
 import { CelebrationLayer } from "@/components/celebrate/CelebrationLayer";
 import { GameRuntime } from "@/components/celebrate/GameRuntime";
@@ -31,6 +32,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (status === "none" && pathname !== "/") router.replace("/");
   }, [status, pathname, router]);
+  // Arriving from the unwrap: the header slides down and the tab bar rises.
+  const [fromUnwrap] = useState(() => typeof window !== "undefined" && window.location.search.includes("from=unwrap"));
 
   if (status === "loading" || (status === "ready" && !settings)) return <ShellSkeleton />;
   if (status === "none") return <Welcome />;
@@ -40,7 +43,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <GameProvider>
         <ThemeSync />
         <GameRuntime />
-        <div className="paper-grain relative flex min-h-dvh">
+        <div className={`paper-grain relative flex min-h-dvh ${fromUnwrap ? "from-unwrap" : ""}`}>
           <Sidebar />
           <div className="relative z-[1] flex min-w-0 flex-1 flex-col">
             <Header />
@@ -57,6 +60,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Shortcuts />
         <AuraSheet />
         <CelebrationLayer />
+        <Onboarding />
         <Toaster />
       </GameProvider>
     </MotionConfig>

@@ -8,12 +8,15 @@ import type { AuraRecord } from "./types";
 /** Seeds a garden for screenshots and tests. */
 export async function seedDemo(kind: string) {
   if (await hasGarden()) return;
+  const { updateSettings } = await import("./data/settings");
   if (kind === "blank") {
     await createGarden({ name: "Sam" });
+    await updateSettings({ onboardedAt: Date.now() });
     return;
   }
   await createGarden({ name: "Laura", giftSlug: "laura" });
-  if (kind === "laura-empty") return;
+  if (kind !== "laura-onboard") await updateSettings({ onboardedAt: Date.now(), unwrappedAt: Date.now() });
+  if (kind === "laura-empty" || kind === "laura-onboard") return;
   const today = todayKey();
   const demo: Parameters<typeof createTask>[0][] = [
     { title: "Essay draft for Marketing 101", projectId: "prj_college", sectionId: "sec_college_0", dueDate: addDays(today, 2), dueTime: "17:00", priority: 3, tags: ["essay"] },
