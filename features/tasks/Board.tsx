@@ -12,6 +12,7 @@ import { ProjectIcon } from "@/components/icons/ProjectIcon";
 import { LeafCheckbox } from "./LeafCheckbox";
 import { useTaskActions } from "./useTaskActions";
 import { useListSensors } from "./SortableTaskList";
+import { instantFeedback } from "@/lib/game/instant";
 
 const COLUMNS: { status: TaskStatus; label: string; tint: string }[] = [
   { status: "todo", label: "To do", tint: "bg-surface-sunk/70" },
@@ -31,7 +32,10 @@ export function Board({ tasks, projects, showProject = true }: { tasks: Task[]; 
     const task = tasks.find((t) => t.id === e.active.id);
     const to = e.over?.id as TaskStatus | undefined;
     if (!task || !to || task.status === to) return;
-    if (to === "done") await completeTask(task);
+    if (to === "done") {
+      instantFeedback();
+      await completeTask(task);
+    }
     else if (task.status === "done") {
       await uncompleteTask(task);
       if (to === "doing") await updateTask(task.id, { status: "doing" });

@@ -22,7 +22,7 @@ export async function dbCount(page: Page, table: string, filter = "r => !r.delet
         r.onsuccess = () => res(r.result);
       });
       db.close();
-      // eslint-disable-next-line no-new-func
+       
       return rows.filter(new Function(`return (${f})`)() as (r: unknown) => boolean).length;
     },
     [table, filter] as const,

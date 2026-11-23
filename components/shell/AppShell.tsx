@@ -16,6 +16,9 @@ import { ShellSkeleton } from "./ShellSkeleton";
 import { PageTransition } from "./PageTransition";
 import { Shortcuts } from "./Shortcuts";
 import { QuickAdd } from "@/features/quickadd/QuickAdd";
+import { CelebrationLayer } from "@/components/celebrate/CelebrationLayer";
+import { GameRuntime } from "@/components/celebrate/GameRuntime";
+import { AuraSheet } from "@/features/aura/AuraSheet";
 import { TaskSheet } from "@/features/tasks/TaskSheet";
 import { TaskPickerSheet } from "@/features/tasks/TaskPickerSheet";
 
@@ -36,6 +39,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <MotionConfig reducedMotion={settings?.reduceMotion ? "always" : "user"}>
       <GameProvider>
         <ThemeSync />
+        <GameRuntime />
         <div className="paper-grain relative flex min-h-dvh">
           <Sidebar />
           <div className="relative z-[1] flex min-w-0 flex-1 flex-col">
@@ -51,6 +55,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <TaskSheet />
         <TaskPickerSheet />
         <Shortcuts />
+        <AuraSheet />
+        <CelebrationLayer />
         <Toaster />
       </GameProvider>
     </MotionConfig>

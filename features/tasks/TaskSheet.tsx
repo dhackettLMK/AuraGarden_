@@ -21,6 +21,7 @@ import type { Priority, Recurrence, Task, TaskStatus } from "@/lib/types";
 import { useTaskActions } from "./useTaskActions";
 import { LeafCheckbox } from "./LeafCheckbox";
 import { dayName } from "@/lib/dates";
+import { instantFeedback } from "@/lib/game/instant";
 
 /** The full task editor (brief 6.3). Every field saves as she goes. */
 export function TaskSheet() {
@@ -49,7 +50,7 @@ function TaskForm({ task, onClose }: { task: Task; onClose: () => void }) {
     [task.projectId],
   );
   const tags = useLiveQuery(() => allTags(), []) ?? [];
-  const { remove } = useTaskActions();
+  const { remove, toggle } = useTaskActions();
   const [title, setTitle] = useState(task.title);
   const [subDraft, setSubDraft] = useState("");
   const notesTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -73,7 +74,10 @@ function TaskForm({ task, onClose }: { task: Task; onClose: () => void }) {
   );
 
   const setStatus = async (s: TaskStatus) => {
-    if (s === "done") await completeTask(task);
+    if (s === "done") {
+      instantFeedback();
+      await completeTask(task);
+    }
     else if (task.status === "done") {
       await uncompleteTask(task);
       if (s === "doing") await save({ status: "doing" });
@@ -84,7 +88,7 @@ function TaskForm({ task, onClose }: { task: Task; onClose: () => void }) {
     <div className="space-y-5">
       <div className="flex items-start gap-3">
         <span className="mt-2.5">
-          <LeafCheckbox checked={task.status === "done"} onChange={(v) => void (v ? completeTask(task) : uncompleteTask(task))} label="Done" />
+          <LeafCheckbox checked={task.status === "done"} onChange={(v, o) => void toggle(task, v, o)} label="Done" />
         </span>
         <textarea
           value={title}
@@ -259,7 +263,7 @@ function TaskForm({ task, onClose }: { task: Task; onClose: () => void }) {
         <ul className="space-y-1.5">
           {task.subtasks.map((s) => (
             <li key={s.id} className="flex items-center gap-2 rounded-2xl bg-surface-sunk py-1 pl-2 pr-1">
-              <LeafCheckbox checked={s.done} size={24} onChange={() => void toggleSubtask(task, s.id)} label={s.done ? `Untick ${s.title}` : `Tick ${s.title}`} />
+              <LeafCheckbox checked={s.done} size={24} onChange={(v, o) => { if (v) instantFeedback(o); void toggleSubtask(task, s.id); }} label={s.done ? `Untick ${s.title}` : `Tick ${s.title}`} />
               <input
                 defaultValue={s.title}
                 aria-label="Subtask"

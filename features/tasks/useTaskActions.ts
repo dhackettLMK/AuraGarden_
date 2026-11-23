@@ -9,6 +9,7 @@ import { todayKey } from "@/lib/day";
 import type { Task } from "@/lib/types";
 import { useHold } from "./hold-store";
 import { groupOf } from "./grouping";
+import { instantFeedback } from "@/lib/game/instant";
 
 export function useTaskActions() {
   const hold = useHold((s) => s.hold);
@@ -16,6 +17,7 @@ export function useTaskActions() {
   const toggle = useCallback(
     async (task: Task, done: boolean, origin?: { x: number; y: number }) => {
       if (done) {
+        instantFeedback(origin);
         hold(task.id, groupOf(task, todayKey()));
         await completeTask(task, origin);
       } else {

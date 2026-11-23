@@ -8,8 +8,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | --- | --- | --- |
 | 1 | Foundations | ✅ Done |
 | 2 | Core editing | ✅ Done |
-| 3 | Aura and Oscar | ⏳ Next |
-| 4 | The garden world | ⬜ |
+| 3 | Aura and Oscar | ✅ Done |
+| 4 | The garden world | ⏳ Next |
 | 5 | Achievements | ⬜ |
 | 6 | Thoughts, People, Calendar | ⬜ |
 | 7 | Home and the unwrap | ⬜ |
@@ -46,6 +46,13 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Empty-project suggestion chips** open quick add for that project rather than creating pre-filled tasks (brief: "never pre-filled data").
 - **Bulk select** lives on /tasks (move, reschedule, tag, delete).
 - **Trash** is a sheet (`features/settings/TrashSheet.tsx`) opened from Settings (wired in phase 7/9 Settings build).
+
+- **Aura engine.** Pure rules in `lib/game/engine.ts` (streaks, boosts) are shared with the economy simulation. `lib/game/aura.ts#awardAura` is the one door; ids are deterministic (`task:<id>:complete:<day>`, `bonus:first:<day>`, `bonus:goal:<day>`, `bonus:deck:<day>`, `bonus:combo:<taskId>:<day>`, `subtask:<task>:<sub>:<day>`, `thought:<id>`, `contact:<id>`, `catchup:<contact>:<day>`). Re-ticking restores the voided record with its original multiplier.
+- **Streak rules as built:** a day counts with ≥1 task/to-do; one missed day per Mon–Sun week is protected (moon); on a break the boost tier steps down one per missed day and her boost is max(current tier, decayed tier); today never breaks anything until it ends.
+- **Combo:** 3 task completions inside a trailing 10 minutes, counted since the previous combo.
+- **Clear the deck** counts tasks due today plus every My List item in the Today section (minimum 3).
+- **Instant feedback** (ding, 15 ms haptic, leaf burst) fires synchronously in the tap handler; the flying number and Oscar follow when the award lands (~tens of ms). Moment cards (unlock, level, achievement, rank) wait until completions have been quiet for 1.6 s, so a run of ticks is never interrupted.
+- **Accessible aura text:** the lavender→gold gradient is deepened for text on light backgrounds (`--aura-ink-*`) to pass AA; the bright gradient stays on fills.
 
 ## Placeholders
 

@@ -265,7 +265,7 @@ export function DoneList({ tasks, projects, showProject }: { tasks: Task[]; proj
 function SectionGrip({ handle, label }: { handle: React.HTMLAttributes<HTMLButtonElement> & { setRef?: (el: HTMLElement | null) => void }; label: string }) {
   const { setRef, ...rest } = handle;
   return (
-    // eslint-disable-next-line react-hooks/refs
+     
     <button {...rest} ref={setRef} className="-ml-1.5 inline-flex h-8 w-6 cursor-grab touch-none items-center justify-center rounded-lg text-ink-faint/70 hover:text-ink-muted" aria-label={label}>
       <GripVertical size={15} />
     </button>

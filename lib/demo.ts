@@ -1,6 +1,9 @@
 import { createGarden, hasGarden } from "./data/garden";
 import { createTask } from "./data/tasks";
 import { addDays, todayKey } from "./day";
+import { putMany, baseRecord } from "./data/core";
+import { afterAward } from "./game/actions";
+import type { AuraRecord } from "./types";
 
 /** Seeds a garden for screenshots and tests. */
 export async function seedDemo(kind: string) {
@@ -25,4 +28,34 @@ export async function seedDemo(kind: string) {
     { title: "Learn to make sourdough", sectionId: "sec_mylist_someday" },
   ];
   for (const t of demo.reverse()) await createTask(t);
+  const grow = /^laura-(\d+)$/.exec(kind);
+  if (grow) await growGarden(Number(grow[1]), today);
+}
+
+/** Back-fill history: a streak of days with completions totalling about `target` aura. */
+async function growGarden(target: number, today: string) {
+  const days = 12;
+  const per = Math.max(25, Math.round(target / days / 6));
+  const rows: AuraRecord[] = [];
+  const projects = ["prj_college", "prj_swapnserve", "prj_hurley", "prj_martial", null];
+  for (let d = days; d >= 1; d--) {
+    const day = addDays(today, -d);
+    const at = new Date(`${day}T14:00:00`).getTime();
+    for (let i = 0; i < 6; i++)
+      rows.push({
+        ...baseRecord(`task:demo-${d}-${i}:complete:${day}`),
+        base: 25,
+        multiplier: per / 25,
+        amount: per,
+        reason: ["Lecture notes", "Swap rail sorted", "Stock check", "Training session", "Laundry", "Reading"][i],
+        source: "task",
+        day,
+        voided: false,
+        projectId: projects[i % projects.length],
+        refId: `demo-${d}-${i}`,
+        at: at + i * 60_000,
+      });
+  }
+  await putMany("aura_ledger", rows, { keepTimestamps: true });
+  await afterAward(0);
 }

@@ -32,10 +32,16 @@ export function AuraPill() {
 }
 
 export function StreakSun() {
-  const { streak } = useGame();
+  const { streak, streakState } = useGame();
+  const open = useUI((s) => s.setAuraSheetOpen);
+  const lit = streakState.todayActive;
   return (
-    <span className="inline-flex h-10 items-center gap-1 px-1 text-[15px] font-semibold text-ink" aria-label={`${streak} day streak`}>
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+    <button
+      onClick={() => open(true)}
+      className={`inline-flex h-10 items-center gap-1 rounded-full px-1.5 text-[15px] font-semibold text-ink transition-opacity hover:bg-surface-sunk ${lit ? "" : "opacity-70"}`}
+      aria-label={`${streak} day streak${lit ? "" : ", not yet today"}`}
+    >
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" className={lit ? "" : "grayscale-[0.6]"}>
         <g stroke="#F2B84B" strokeWidth="2" strokeLinecap="round">
           {Array.from({ length: 8 }).map((_, i) => {
             const a = (i * Math.PI) / 4;
@@ -46,7 +52,7 @@ export function StreakSun() {
         <circle cx="10.4" cy="10.4" r="1.6" fill="#FFF3C6" />
       </svg>
       <span className="tabular">{streak}</span>
-    </span>
+    </button>
   );
 }
 
