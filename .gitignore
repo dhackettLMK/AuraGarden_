@@ -10,3 +10,10 @@ playwright-report/
 test-results/
 *.log
 .DS_Store
+*.tsbuildinfo
+next-env.d.ts
+*.pem
+/public/sw.js
+/public/sw.js.map
+/screenshots/
+/public/brand/
