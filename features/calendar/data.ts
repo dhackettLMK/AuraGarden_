@@ -114,6 +114,9 @@ export async function refreshFeed(sub: CalendarSubscription) {
   const key = await getMeta<string>("gardenKey");
   if (!key) return;
   try {
+    // The feed route only serves gardens the server knows about.
+    const { ensureRegistered, syncEnabled } = await import("@/lib/sync/engine");
+    if (await syncEnabled()) await ensureRegistered(key);
     const res = await fetch("/api/calendar/feed", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Garden ${key}` },

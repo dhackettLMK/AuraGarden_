@@ -20,7 +20,9 @@ export async function POST(req: Request) {
   if (!store) return json({ error: "Sync is off on this site." }, 503);
   const id = await gardenIdFrom(req);
   if (!id) return json({ error: "Invalid garden key." }, 401);
-  if (!(await store.rateLimit(`create:${clientIp(req)}`, 20, 86_400))) return json({ error: "Too many new gardens today. Try again tomorrow." }, 429);
+  // 20 new gardens per IP per day (brief 12.3); raised only for automated test servers.
+  const perDay = Number(process.env.GARDENS_PER_IP_PER_DAY) || 20;
+  if (!(await store.rateLimit(`create:${clientIp(req)}`, perDay, 86_400))) return json({ error: "Too many new gardens today. Try again tomorrow." }, 429);
   const created = await store.createGarden(id);
   return json({ ok: true, created }, created ? 201 : 200);
 }

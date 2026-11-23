@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Caveat, Fraunces, Great_Vibes, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { DevHooks } from "@/components/DevHooks";
+import { ServiceWorker } from "@/components/ServiceWorker";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -21,6 +22,10 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false },
   referrer: "no-referrer",
   robots: { index: false, follow: false },
+  icons: {
+    icon: [{ url: "/icons/favicon-48.png", sizes: "48x48", type: "image/png" }, { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
+  },
 };
 
 export const viewport: Viewport = {
@@ -49,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full">
         {children}
         <DevHooks />
+        <ServiceWorker />
       </body>
     </html>
   );

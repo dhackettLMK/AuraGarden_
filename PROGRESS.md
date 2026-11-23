@@ -13,8 +13,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | 5 | Achievements | ✅ Done |
 | 6 | Thoughts, People, Calendar | ✅ Done |
 | 7 | Home and the unwrap | ✅ Done |
-| 8 | Sync and PWA | ⏳ Next |
-| 9 | Polish | ⬜ |
+| 8 | Sync and PWA | ✅ Done |
+| 9 | Polish | ⏳ Next |
 | 10 | Ship | ⬜ |
 
 ## Stack (versions installed and checked)
@@ -75,6 +75,17 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Onboarding** runs once per garden created on this device (blank gardens too): Aura → Garden → Projects → first task (tick it) → save secret link → add to Home Screen; then `navigator.storage.persist()`. Joined gardens inherit `onboardedAt` from sync.
 - **Home**: widgets can be hidden, shown and reordered (Edit Home). At ≥1280 px the agenda and garden window move to a right rail. Oscar (72 px) sits bottom-right; tap for a line.
 - **Settings** is complete apart from server-side link rotation and delete, which arrive with sync in phase 8.
+
+- **Sync store selection** (`lib/server/store.ts`): Supabase when `SUPABASE_URL` + `SUPABASE_SECRET_KEY` are set (production); a direct Postgres connection when `DATABASE_URL` is set (local dev and the sync e2e tests, same SQL functions); otherwise sync is off and Settings says so.
+- **All server logic is SQL functions** in `supabase/migrations/0001_init.sql` (`supabase/setup.sql` is the same, ready to paste). RLS on, no policies, functions executable by `service_role` only.
+- **Conflicts:** last write wins per record by `updated_at` (server clamps to now + 1 min), ties by device id; a local record still waiting in the outbox and newer than the server's copy is kept.
+- **Sync cadence:** 2 s after edits settle, on focus, on `online`, and a 5 s poll while the page is visible (this is what makes two devices see each other's edits within 10 s).
+- **Join:** `/join#k=…` reads the key from the hash and immediately strips it from the address bar and history; asks "Open Laura's garden on this device?" (name read from the synced settings record). If this device was told its garden has a new link, joining with the new key keeps local data and re-syncs instead of wiping.
+- **Rotation:** `PATCH /api/garden` with the old key in the header and the new key in the body; the server stores only the new hash. Other devices get 401 → "This garden has a new link. Scan it to keep syncing." with a Scan button in Settings.
+- **Calendar feeds with sync on** require the garden to be registered; the feed client registers first.
+- **`GARDENS_PER_IP_PER_DAY`** (default 20, per brief) exists only so automated test servers can create many gardens; don't set it on Vercel.
+- **PWA:** `app/manifest.ts`, Oscar icons from `scripts/make-icons.tsx` (rendered from the real Oscar component), hand-written `public/sw.js` (network-first pages with cached fallback, cache-first static assets, APIs never cached), registered in production only. iPhone: onboarding copies the link before install; the installed app with no garden leads with "Paste my garden link".
+- **Running the sync tests locally:** start Postgres, apply `supabase/setup.sql`, run the server with `DATABASE_URL=… GARDENS_PER_IP_PER_DAY=100000`, then `SYNC_E2E=1 npx playwright test`.
 
 ## Placeholders
 

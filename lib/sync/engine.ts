@@ -98,7 +98,7 @@ export async function syncNow(): Promise<void> {
   return running;
 }
 
-async function ensureRegistered(key: string) {
+export async function ensureRegistered(key: string) {
   if (await getMeta<boolean>("serverRegistered")) return true;
   const res = await fetch("/api/garden", { method: "POST", headers: { Authorization: `Garden ${key}` } });
   if (res.ok) {

@@ -114,6 +114,7 @@ export function HomeView() {
             </motion.div>
           ))
         )}
+        {!editing && <LinkReminder />}
         {!editing && <MoreShortcuts />}
       </div>
       {wideRail && (
@@ -414,5 +415,28 @@ function MoreShortcuts() {
         </Link>
       ))}
     </nav>
+  );
+}
+
+/** If she's never saved her secret link, Oscar reminds her gently once a month (brief 12.4). */
+function LinkReminder() {
+  const s = useSettings();
+  const now = useNow(60 * 60_000);
+  if (!s || s.linkSavedAt || !s.onboardedAt) return null;
+  const last = s.linkReminderAt ?? s.onboardedAt;
+  if (now - last < 30 * 86_400_000) return null;
+  return (
+    <section className="flex items-center gap-3 rounded-[24px] bg-primary-soft/70 p-4">
+      <div className="min-w-0 flex-1">
+        <p className="font-display text-[17px] font-semibold">{pickLine("saveLink")}</p>
+        <p className="text-[14px] text-ink-muted">It&apos;s the only key to your garden.</p>
+      </div>
+      <Link href="/settings#link" className="inline-flex h-10 items-center rounded-full bg-primary px-4 text-sm font-semibold text-primary-ink">
+        Save it
+      </Link>
+      <button onClick={() => updateSettings({ linkReminderAt: Date.now() })} className="text-sm font-semibold text-ink-muted" aria-label="Remind me later">
+        Later
+      </button>
+    </section>
   );
 }

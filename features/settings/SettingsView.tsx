@@ -28,6 +28,7 @@ import { SaveLinkPanel } from "@/features/link/SaveLinkPanel";
 import { gardenLink, qrDataUrl } from "@/features/link/link-tools";
 import { GiftTag } from "@/features/unwrap/GiftBox";
 import { DeleteGardenSheet, RotateLinkButton } from "./GardenDanger";
+import { JoinSheet } from "@/features/welcome/JoinSheet";
 import type { CelebrationStyle, NumberStyle, TabKey, ThemePref } from "@/lib/types";
 
 const ACCENTS = [null, "#4F7A5A", "#6C8EBF", "#B07AA1", "#D9822B", "#C76A58"];
@@ -40,6 +41,7 @@ export function SettingsView() {
   const [calendars, setCalendars] = useState(false);
   const [bigQr, setBigQr] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [rescan, setRescan] = useState(false);
   const importRef = useRef<HTMLInputElement>(null);
   const avatarRef = useRef<HTMLInputElement>(null);
   const sync = useSyncStore();
@@ -89,12 +91,20 @@ export function SettingsView() {
         </div>
       </Section>
 
-      <Section title="My garden link" icon={<Gift size={18} />}>
+      <Section title="My garden link" icon={<Gift size={18} />} id="link">
+        {sync.status === "attention" && sync.message?.includes("new link") && (
+          <div className="mb-3 flex items-center gap-3 rounded-2xl bg-gentle/60 px-4 py-3 text-[14px] text-gentle-ink">
+            <span className="flex-1">{sync.message}</span>
+            <Button size="sm" onClick={() => setRescan(true)}>
+              Scan the new link
+            </Button>
+          </div>
+        )}
         {sync.status === "off" ? (
           <p className="mb-3 rounded-2xl bg-gentle/50 px-4 py-3 text-[14px] text-gentle-ink">Sync is off on this site, so your garden lives on this device only. Export a backup below now and then.</p>
         ) : (
           <p className="mb-3 text-[14px] text-ink-muted">
-            {sync.status === "synced" && sync.lastSyncAt ? `Synced ${relativeTime(sync.lastSyncAt)}.` : sync.status === "offline" ? "Offline. Changes will sync when you're back." : sync.status === "attention" ? (sync.message ?? "Sync needs attention.") : "Syncing…"} This link is the only key to your garden.
+            {sync.status === "synced" && sync.lastSyncAt ? `Synced ${relativeTime(sync.lastSyncAt)}.` : sync.status === "offline" ? "Offline. Changes will sync when you're back." : sync.status === "attention" ? (sync.message?.includes("new link") ? "" : (sync.message ?? "Sync needs attention.")) : "Syncing…"} This link is the only key to your garden.
           </p>
         )}
         <SaveLinkPanel />
@@ -311,6 +321,7 @@ export function SettingsView() {
       <TrashSheet open={trash} onOpenChange={setTrash} />
       <CalendarsSheet open={calendars} onOpenChange={setCalendars} />
       <DeleteGardenSheet open={deleting} onOpenChange={setDeleting} />
+      <JoinSheet open={rescan} onOpenChange={setRescan} />
       <Sheet open={!!bigQr} onOpenChange={(v) => !v && setBigQr(null)} title="Scan to open your garden" description="On the other device, open the camera and point it here." size="md">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {bigQr && <img src={bigQr} alt="QR code for your secret garden link" className="mx-auto aspect-square w-full max-w-[420px] rounded-3xl bg-white p-3" />}
@@ -319,9 +330,9 @@ export function SettingsView() {
   );
 }
 
-function Section({ title, icon, children }: { title: string; icon?: React.ReactNode; children: React.ReactNode }) {
+function Section({ title, icon, children, id }: { title: string; icon?: React.ReactNode; children: React.ReactNode; id?: string }) {
   return (
-    <section className="card p-4 md:p-5" aria-label={title}>
+    <section className="card scroll-mt-20 p-4 md:p-5" aria-label={title} id={id}>
       <h2 className="mb-3 flex items-center gap-2 font-display text-[20px] font-semibold">
         {icon && <span className="text-primary">{icon}</span>}
         {title}

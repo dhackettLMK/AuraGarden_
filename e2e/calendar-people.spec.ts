@@ -66,6 +66,8 @@ test("a pasted iCal link shows its recurring events in Week view", async ({ page
 test("the feed route refuses loopback and the metadata address, and wrong keys", async ({ page }) => {
   await seed(page, "laura-empty");
   const key = await gardenKey(page);
+  // With sync on, the server must know the garden (the app registers it on first sync).
+  await page.request.post("/api/garden", { headers: { Authorization: `Garden ${key}` } });
   for (const url of ["http://127.0.0.1/cal.ics", "http://169.254.169.254/latest/meta-data"]) {
     const res = await page.request.post("/api/calendar/feed", { headers: { Authorization: `Garden ${key}` }, data: { url } });
     expect(res.status(), url).toBe(422);

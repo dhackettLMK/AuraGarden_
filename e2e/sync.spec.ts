@@ -108,8 +108,34 @@ test.describe("sync", () => {
     await ctxA.setOffline(true);
     await a.getByRole("checkbox", { name: /Complete "Offline tick"/ }).click();
     await expect(a.getByRole("img", { name: /Sync: Offline/ })).toBeVisible({ timeout: 10_000 });
-    expect((await ledgerFor(a, "Offline tick")).length).toBe(1);
+    await expect.poll(async () => (await ledgerFor(a, "Offline tick")).length).toBe(1);
     await ctxA.setOffline(false);
     await expect.poll(async () => (await ledgerFor(b, "Offline tick")).length, { timeout: 15_000 }).toBe(1);
+  });
+
+  test("making a new link stops the old one and other devices are asked to rescan", async ({ browser }) => {
+    const a = await (await browser.newContext()).newPage();
+    const b = await (await browser.newContext()).newPage();
+    await seed(a, "laura-empty");
+    await a.goto("/settings");
+    await expect(a.getByRole("img", { name: /Sync: Synced/ })).toBeVisible({ timeout: 15_000 });
+    const oldKey = await gardenKey(a);
+    await b.goto(`/join#k=${oldKey}`);
+    await b.getByRole("button", { name: "Open garden" }).click();
+    await expect(b).toHaveURL(/\/$/, { timeout: 15_000 });
+
+    await a.getByRole("button", { name: "Make a new link" }).first().click();
+    await a.getByRole("dialog").getByRole("button", { name: "Make a new link" }).click();
+    await expect(a.getByText("New link made")).toBeVisible();
+    expect(await gardenKey(a)).not.toBe(oldKey);
+
+    const old = await a.request.post("/api/sync", { headers: { Authorization: `Garden ${oldKey}` }, data: { cursor: 0, changes: [] } });
+    expect(old.status()).toBe(401);
+    await b.goto("/settings");
+    await expect(b.getByText("This garden has a new link. Scan it to keep syncing.")).toBeVisible({ timeout: 15_000 });
+  });
+
+  test("the keep-alive cron needs its secret", async ({ request }) => {
+    expect((await request.get("/api/keepalive")).status()).toBe(401);
   });
 });

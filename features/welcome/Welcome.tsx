@@ -9,6 +9,10 @@ import { Input } from "@/components/ui/Field";
 import { createGarden } from "@/lib/data/garden";
 import { LogoMark } from "@/components/shell/Sidebar";
 import { JoinSheet } from "./JoinSheet";
+import { extractKey } from "@/lib/key";
+import { useMounted } from "@/lib/hooks";
+import { isStandalone } from "@/features/link/link-tools";
+import { ClipboardPaste } from "lucide-react";
 
 /** "/" on a device with no garden (brief 4). Never plays the unwrap. */
 export function Welcome() {
@@ -17,6 +21,20 @@ export function Welcome() {
   const [busy, setBusy] = useState(false);
   const [joinOpen, setJoinOpen] = useState(false);
   const router = useRouter();
+  const mounted = useMounted();
+  // In the installed app on iPhone storage is separate from Safari: lead with pasting the link.
+  const standalone = mounted && isStandalone();
+  const [pasteError, setPasteError] = useState<string | null>(null);
+  async function pasteLink() {
+    try {
+      const key = extractKey(await navigator.clipboard.readText());
+      if (key) router.push(`/join#k=${key}`);
+      else setJoinOpen(true);
+    } catch {
+      setPasteError("Couldn't read the clipboard. Paste the link in the box instead.");
+      setJoinOpen(true);
+    }
+  }
 
   async function start(e: React.FormEvent) {
     e.preventDefault();
@@ -46,7 +64,13 @@ export function Welcome() {
 
         {step === "choose" ? (
           <div className="mt-8 flex w-full flex-col gap-3">
-            <Button size="lg" onClick={() => setStep("name")}>
+            {standalone && (
+              <Button size="lg" onClick={pasteLink}>
+                <ClipboardPaste size={20} /> Paste my garden link
+              </Button>
+            )}
+            {pasteError && <p className="text-sm text-danger">{pasteError}</p>}
+            <Button size="lg" variant={standalone ? "outline" : "primary"} onClick={() => setStep("name")}>
               <Sprout size={20} /> Start a garden
             </Button>
             <Button size="lg" variant="outline" onClick={() => setJoinOpen(true)}>
