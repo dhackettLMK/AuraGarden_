@@ -15,7 +15,7 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | 7 | Home and the unwrap | ✅ Done |
 | 8 | Sync and PWA | ✅ Done |
 | 9 | Polish | ✅ Done |
-| 10 | Ship | ⏳ Next |
+| 10 | Ship | ✅ Done (deploy waiting on David's dashboard steps) |
 
 ## Stack (versions installed and checked)
 
@@ -92,7 +92,12 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Accessibility details:** `ink-faint` and the gold aura text stop darkened to pass AA; text on calendar colours picks dark or light ink by contrast (`lib/color.ts`); accessible names include visible text; sortable lists keep `li` semantics (drag attributes live on an inner wrapper); headings in order; 24 px minimum targets.
 - **Reduced motion / sound off** are covered by `e2e/motion-sound.spec.ts` (no flying number, no confetti canvas, every CSS animation and transition effectively instant; no oscillators or noise sources start with sound off).
 
+- **Ship:** `DEPLOY.md` (phone-friendly, click by click), `vercel.json` (dub1 + daily keep-alive cron), `supabase/setup.sql`, `HANDOVER.md`, developer `README.md`, and the printable gift card in `gift/` (`scripts/make-gift-card.tsx`). `VERCEL_TOKEN` / `SUPABASE_ACCESS_TOKEN` were not in the environment, so the dashboard steps are David's. The code is on `claude/wizardly-gates-wo8a0v`; DEPLOY step 0 merges it into `main`.
+
 ## Placeholders
+
+- **Gift card QR** points at `https://aura-garden.vercel.app/laura` until the real URL is known; re-run `SITE_URL=… npx tsx scripts/make-gift-card.tsx`.
+- **Gift note** is unset (`config/gifts.ts`).
 
 - **Swap 'N' Serve Cup logo.** David pasted a cleaner (non-distressed) version of the Cup logo in chat on 23 Nov. Pasted images can't be saved from chat, so the app uses the existing `assets/logos/swapnserve-cup-logo.png`. To swap it in, upload the new PNG over that path (same name). The build copies it to `public/brand/` and every screen picks it up.
 
