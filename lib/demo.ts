@@ -28,6 +28,7 @@ export async function seedDemo(kind: string) {
     { title: "Learn to make sourdough", sectionId: "sec_mylist_someday" },
   ];
   for (const t of demo.reverse()) await createTask(t);
+  await seedLife(today);
   const grow = /^laura-(\d+)$/.exec(kind);
   if (grow) await growGarden(Number(grow[1]), today);
 }
@@ -73,4 +74,28 @@ export async function grant(amount: number, projectId: string | null = null) {
   const before = (await readGameContext()).total;
   await awardAura({ id: `bonus:grant:${Date.now()}`, base: amount, reason: "Test grant", source: "bonus", multiply: false, projectId });
   await afterAward(before);
+}
+
+async function seedLife(today: string) {
+  const { createThought } = await import("./data/thoughts");
+  const { createContact, logCatchup } = await import("./data/contacts");
+  const { createEvent } = await import("./data/events");
+  await createThought({ title: "Ideas for the Christmas swap", body: "<p>Kids corner, a mending table, hot chocolate.</p>", text: "Kids corner, a mending table, hot chocolate.", tags: ["swap"], projectIds: ["prj_swapnserve"], pinned: true, mood: 4 });
+  await createThought({ title: "", body: "<p>Grading went better than I thought. Sensei said my stances are cleaner.</p>", text: "Grading went better than I thought. Sensei said my stances are cleaner.", tags: ["training"], projectIds: ["prj_martial"], mood: 5 });
+  await createThought({ title: "Essay outline", body: "<p>Intro, three brands, what Gen Z actually wants, conclusion.</p>", text: "Intro, three brands, what Gen Z actually wants, conclusion.", tags: ["college"], mood: 3 });
+  const people = [
+    { name: "Aoife Byrne", organisation: "SETU", role: "Classmate", color: "#9CC9FF", keepInTouchDays: 14 },
+    { name: "Ciara Walsh", organisation: "Swap 'N' Serve", role: "Volunteer lead", color: "#F6C828", birthday: `2004-${addDays(today, 5).slice(5)}` },
+    { name: "Sensei Tom", organisation: "Dojo", role: "Instructor", color: "#E8A7A0" },
+    { name: "Nana", role: "Family", color: "#C59BF5", keepInTouchDays: 7, lastContacted: Date.now() - 10 * 86_400_000 },
+  ];
+  for (const p of people) {
+    const c = await createContact(p);
+    if (p.name === "Aoife Byrne") await logCatchup(c.id, addDays(today, -3), "Coffee after the lecture");
+  }
+  const at = (d: string, h: number, m = 0) => new Date(`${d}T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00`).getTime();
+  await createEvent({ title: "Marketing lecture", start: at(today, 10), end: at(today, 11), location: "Room 2.04", projectId: "prj_college", recurrence: { kind: "weekly", days: [1, 3] } });
+  await createEvent({ title: "Training", start: at(addDays(today, 1), 18), end: at(addDays(today, 1), 19, 30), projectId: "prj_martial" });
+  await createEvent({ title: "Swap planning call", start: at(addDays(today, 2), 13), end: at(addDays(today, 2), 13, 45), projectId: "prj_swapnserve" });
+  await createEvent({ title: "Shift at Hurley Pop's", start: at(today, 15), end: at(today, 19), projectId: "prj_hurley" });
 }

@@ -1,7 +1,7 @@
-import { ComingSoon } from "@/features/ComingSoon";
+import { CalendarView } from "@/features/calendar/CalendarView";
 
 export const metadata = { title: "Calendar" };
 
 export default function Page() {
-  return <ComingSoon name="Calendar" />;
+  return <CalendarView />;
 }

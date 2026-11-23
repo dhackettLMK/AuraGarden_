@@ -1,7 +1,7 @@
 import { cn } from "@/lib/cn";
 
-export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn("skeleton", className)} aria-hidden="true" />;
+export function Skeleton({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <div className={cn("skeleton", className)} style={style} aria-hidden="true" />;
 }
 
 /** Skeleton shaped like a list of task rows. */

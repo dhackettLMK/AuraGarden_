@@ -5,13 +5,14 @@ import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { Oscar } from "@/components/oscar/Oscar";
 import { Button } from "@/components/ui/Button";
-import { AuraOrb } from "@/components/icons/AuraOrb";
 import { BeltIcon } from "@/components/icons/BeltIcon";
 import type { Stamped } from "@/lib/game/celebrate-bus";
 import { useGame } from "@/lib/game/GameProvider";
 import { useSettings } from "@/lib/hooks";
 import { formatAura } from "@/lib/format";
-import { TIER_COLORS } from "@/config/tiers";
+import type { Tier } from "@/config/tiers";
+import { Badge } from "@/components/trophies/Badge";
+import { achievementById } from "@/config/achievements";
 import { ItemThumb } from "@/components/garden/ItemThumb";
 
 /**
@@ -67,8 +68,8 @@ export function MomentCard({ event, onClose }: { event: Stamped | null; onClose:
                 {event.kind === "achievement" && (
                   <>
                     <p className="text-sm font-bold uppercase tracking-[0.12em] text-ink-muted">New trophy</p>
-                    <div className="mx-auto mt-3 flex h-28 w-28 items-center justify-center rounded-full shadow-[var(--shadow-lift)]" style={{ background: TIER_COLORS[event.tier as keyof typeof TIER_COLORS] ?? "#E7B53C" }}>
-                      <AuraOrb size={56} />
+                    <div className="mx-auto mt-3 flex justify-center">
+                      <Badge tier={event.tier as Tier} family={achievementById(event.achievementId)?.family ?? "tasks"} earned size={120} />
                     </div>
                     <Dialog.Title className="mt-4 font-display text-[24px] font-semibold leading-tight">{event.name}</Dialog.Title>
                     <p className="mt-1 font-semibold capitalize text-ink-muted">

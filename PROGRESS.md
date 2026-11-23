@@ -11,8 +11,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 | 3 | Aura and Oscar | ✅ Done |
 | 4 | The garden world | ✅ Done |
 | 5 | Achievements | ✅ Done |
-| 6 | Thoughts, People, Calendar | ⏳ Next |
-| 7 | Home and the unwrap | ⬜ |
+| 6 | Thoughts, People, Calendar | ✅ Done |
+| 7 | Home and the unwrap | ⏳ Next |
 | 8 | Sync and PWA | ⬜ |
 | 9 | Polish | ⬜ |
 | 10 | Ship | ⬜ |
@@ -66,6 +66,11 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Rank achievements** celebrate with a rank card (belt icon for Martial Arts). Only the latest three trophies from one jump get a card; all are recorded and paid.
 - **`scripts/verify.sh`** runs typecheck, lint, unit tests and build and fails fast; use it before every commit.
 
+- **Calendar feed route** (`app/api/calendar/feed`): POST with the URL in the body (never a query string), `Authorization: Garden <key>`, http/https only, `webcal://` → `https://`, DNS checked on every connection (private/loopback/link-local/CGNAT refused, so DNS rebinding can't slip past), 10 s timeout, 5 MB cap, must parse as iCalendar, ±6 months of recurrences expanded with ical.js, 15-minute in-memory cache, rate limits per garden and per IP. `FEED_TEST_ALLOW` is a test-only exact-origin allowance for the e2e fixture feed; never set it on Vercel.
+- **Calendar views:** Month, Week (desktop default), 3 days (phone default), Day, Agenda. Drag own events and time blocks to move (snaps to 15 min, across days) or resize from the bottom edge; feed events are read-only; due tasks are all-day chips you can tick; unscheduled tasks tray (drag onto a time on desktop, tap-then-tap on phones). Pull down to refresh feeds on phones.
+- **Thought aura** is awarded once a new thought has at least a few characters of text (first 3 a day).
+- **People one-tap actions:** call, text, WhatsApp (`wa.me`, Irish 08x numbers become 353…), email, Instagram, LinkedIn. Lucide no longer ships brand icons, so these use neutral icons.
+
 ## Placeholders
 
 - **Swap 'N' Serve Cup logo.** David pasted a cleaner (non-distressed) version of the Cup logo in chat on 23 Nov. Pasted images can't be saved from chat, so the app uses the existing `assets/logos/swapnserve-cup-logo.png`. To swap it in, upload the new PNG over that path (same name). The build copies it to `public/brand/` and every screen picks it up.
@@ -73,6 +78,8 @@ A new session can resume from this file alone: read `CLAUDE.md`, `AURAGARDEN_BRI
 - **Realms 4–10** launch as teaser cards (per brief); see `REALMS_TODO.md`.
 
 ## Open questions for David
+
+- **Calendar how-tos are unverified.** The brief asks to check the Google / Apple / Outlook steps against their help pages before writing the copy, but support.google.com, support.apple.com and support.microsoft.com are not reachable from the build environment. The steps in `features/calendar/CalendarsSheet.tsx` are written conservatively from knowledge; please check them once on a real account (or a later session with those hosts allowed can verify).
 
 - **Cadence target "something new every 2 weeks in years 2–5".** Met when level-ups count; strictly counting only unlocks/trophies/ranks, late years have up to ~2-month gaps because the brief's ladders are geometric. If you want it strict, the next lever is more small decor unlocks per later realm (cheap to add in `config/realms.ts`).
 

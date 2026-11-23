@@ -22,6 +22,11 @@ export default defineConfig({
     url: `http://localhost:${PORT}`,
     reuseExistingServer: true,
     timeout: 120_000,
-    env: { SYNC_DEV_STORE: process.env.SYNC_DEV_STORE ?? "" },
+    env: {
+      SYNC_DEV_STORE: process.env.SYNC_DEV_STORE ?? "",
+      // Test-only: lets the feed route reach the fixture server on this exact origin.
+      FEED_TEST_ALLOW: "http://127.0.0.1:4555/",
+      FEED_TEST_ALLOW_IN_PROD: "yes-i-am-a-test",
+    },
   },
 });
